@@ -1,41 +1,75 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { Badge } from './ui/Badge';
+import { Instagram, Facebook, Twitter } from 'lucide-react';
 
 export const Footer = () => {
   return (
-    <footer className="bg-brand-charcoal border-t border-brand-gray/50 py-16 mt-20">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-        <div className="space-y-4 col-span-1 md:col-span-2">
-          <div className="flex flex-col leading-none">
-            <span className="text-2xl font-black tracking-tighter uppercase">Dönerhaus</span>
-            <span className="text-xs text-brand-orange font-bold tracking-[0.2em] uppercase">Nürnberg</span>
+    <footer className="bg-brand-black border-t border-brand-white/5 pt-32 pb-16">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-20 mb-32">
+          <div className="md:col-span-5 space-y-10">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="relative w-12 h-12 rounded-full overflow-hidden border border-brand-orange/50">
+                <Image src="/logo.jpg" alt="Dönerhaus Logo" fill className="object-cover" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-xl font-black tracking-tighter uppercase">Dönerhaus</span>
+                <span className="text-[10px] text-brand-orange font-bold tracking-[0.3em] uppercase">Nürnberg</span>
+              </div>
+            </Link>
+            <p className="text-brand-white/40 text-lg font-medium leading-relaxed max-w-sm">
+              The benchmark for premium street food in Nürnberg. Crafting the perfect döner experience since 2024.
+            </p>
+            <div className="flex gap-6">
+              {[Instagram, Facebook, Twitter].map((Icon, i) => (
+                <Link key={i} href="#" className="w-12 h-12 rounded-full glass flex items-center justify-center text-brand-white/40 hover:text-brand-orange hover:border-brand-orange transition-all">
+                  <Icon className="w-5 h-5" />
+                </Link>
+              ))}
+            </div>
           </div>
-          <p className="text-brand-white/50 max-w-sm text-sm leading-relaxed">
-            Premium German-Turkish street food culture. Crafted with passion in the heart of Nürnberg. Fresh ingredients, traditional recipes, and a modern dining experience.
-          </p>
+
+          <div className="md:col-span-2 space-y-8">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Navigate</h4>
+            <ul className="space-y-4 text-sm font-bold uppercase tracking-widest text-brand-white/60">
+              <li><Link href="/" className="hover:text-brand-white transition-colors">Home</Link></li>
+              <li><Link href="#menu" className="hover:text-brand-white transition-colors">Menu</Link></li>
+              <li><Link href="#about" className="hover:text-brand-white transition-colors">About Us</Link></li>
+              <li><Link href="/club/register" className="hover:text-brand-white transition-colors">Club</Link></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2 space-y-8">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Legal</h4>
+            <ul className="space-y-4 text-sm font-bold uppercase tracking-widest text-brand-white/60">
+              <li><Link href="#" className="hover:text-brand-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="#" className="hover:text-brand-white transition-colors">Impressum</Link></li>
+              <li><Link href="#" className="hover:text-brand-white transition-colors">Terms of Use</Link></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-3 space-y-8">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Location</h4>
+            <div className="space-y-4">
+              <p className="text-sm font-bold uppercase tracking-widest text-brand-white/60 leading-loose">
+                Königstraße 12 <br/>
+                90402 Nürnberg <br/>
+                Germany
+              </p>
+              <Badge variant="outline">Open daily until 22:00</Badge>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-brand-orange">Quick Links</h4>
-          <ul className="space-y-3 text-[13px] font-medium text-brand-white/40">
-            <li><Link href="/" className="hover:text-brand-white transition-colors">Home</Link></li>
-            <li><Link href="#menu" className="hover:text-brand-white transition-colors">Our Menu</Link></li>
-            <li><Link href="/club/register" className="hover:text-brand-white transition-colors">Customer Club</Link></li>
-            <li><Link href="/admin" className="hover:text-brand-white transition-colors">Admin Dashboard</Link></li>
-          </ul>
+        <div className="pt-16 border-t border-brand-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/10">
+          <p>© 2026 Dönerhaus Nürnberg. All Rights Reserved.</p>
+          <div className="flex gap-12">
+            <span>Built by Jules</span>
+            <Link href="/admin" className="hover:text-brand-orange transition-colors">Admin Portal</Link>
+            <Link href="/seller" className="hover:text-brand-orange transition-colors">Seller POS</Link>
+          </div>
         </div>
-
-        <div className="space-y-6">
-          <h4 className="text-[11px] font-black uppercase tracking-[0.2em] text-brand-orange">Contact Us</h4>
-          <ul className="space-y-3 text-[13px] font-medium text-brand-white/40">
-            <li>Nürnberg, Germany</li>
-            <li>+49 911 123 4567</li>
-            <li>hello@donerhaus-nbg.de</li>
-            <li className="pt-2 text-brand-white/60">Mon - Sat: 11:00 - 22:00<br/>Sun: 12:00 - 20:00</li>
-          </ul>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-brand-gray/10 text-center text-[10px] font-bold uppercase tracking-[0.4em] text-brand-white/10">
-        &copy; {new Date().getFullYear()} Dönerhaus Nürnberg. Premium Street Food.
       </div>
     </footer>
   );

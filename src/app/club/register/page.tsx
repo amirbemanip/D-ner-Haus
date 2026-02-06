@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { CheckCircle2, Ticket, Gift, Copy, Check } from 'lucide-react';
+import { CheckCircle2, Ticket, Gift, Copy, Check, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 export default function RegisterPage() {
@@ -37,7 +36,6 @@ export default function RegisterPage() {
 
       if (!res.ok) {
         if (data.membershipCode) {
-          // If already registered, we can show their code
           setMembershipCode(data.membershipCode);
         } else {
           setError(data.error || 'Something went wrong');
@@ -53,84 +51,92 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-24 px-6 relative overflow-hidden bg-brand-black">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-orange/5 rounded-full blur-[120px] -mr-64 -mt-64" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-orange/5 rounded-full blur-[120px] -ml-64 -mb-64" />
+    <div className="min-h-screen flex items-center justify-center py-32 px-6 relative overflow-hidden bg-brand-black">
+      {/* Editorial Background */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-orange/20 rounded-full blur-[150px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-[150px]" />
+      </div>
 
-      <div className="max-w-xl w-full relative z-10">
+      <div className="max-w-2xl w-full relative z-10">
         <AnimatePresence mode="wait">
           {!membershipCode ? (
             <motion.div
               key="form"
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 1.02, y: -10 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Card className="p-10 md:p-14 border-brand-gray/30 bg-brand-charcoal/50 backdrop-blur-2xl shadow-2xl rounded-[32px]">
-                <div className="text-center space-y-4 mb-12">
-                  <div className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 border border-brand-orange/20">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-orange">Exclusive Membership</span>
-                  </div>
-                  <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Join the Club</h1>
-                  <p className="text-brand-white/40 text-sm font-medium">Register now to unlock premium rewards and exclusive benefits.</p>
+              <Card className="p-12 md:p-16" animate={false}>
+                <div className="text-center space-y-6 mb-12">
+                  <Badge variant="primary">Prestige Membership</Badge>
+                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none">
+                    Join the <br/> <span className="text-brand-orange">Döner Elite</span>
+                  </h1>
+                  <p className="text-brand-white/40 text-sm font-medium max-w-sm mx-auto">
+                    Unlock exclusive culinary privileges and track your journey to free rewards.
+                  </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <Input
-                    label="Full Name"
-                    placeholder="E.g. Max Mustermann"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                  <Input
-                    label="Mobile Number"
-                    placeholder="+49 123 4567890"
-                    required
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Full Name</label>
+                      <input
+                        type="text"
+                        placeholder="E.g. Max Mustermann"
+                        required
+                        className="w-full h-16 bg-brand-black border border-brand-white/10 rounded-2xl px-6 font-bold focus:border-brand-orange outline-none transition-all placeholder:text-brand-white/10"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Mobile Number</label>
+                      <input
+                        type="tel"
+                        placeholder="+49 123 4567890"
+                        required
+                        className="w-full h-16 bg-brand-black border border-brand-white/10 rounded-2xl px-6 font-bold focus:border-brand-orange outline-none transition-all placeholder:text-brand-white/10"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      />
+                    </div>
+                  </div>
 
                   {error && (
                     <motion.p
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="text-[13px] font-bold text-red-500 bg-red-500/10 p-4 rounded-xl border border-red-500/10"
+                      className="text-[11px] font-bold text-red-500 bg-red-500/10 p-4 rounded-xl border border-red-500/20 text-center"
                     >
                       {error}
                     </motion.p>
                   )}
 
-                  <Button type="submit" size="lg" className="w-full h-16 text-[15px] uppercase tracking-[0.2em] font-black rounded-2xl shadow-2xl shadow-brand-orange/20" disabled={loading}>
-                    {loading ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-                        Processing...
-                      </div>
-                    ) : 'Register & Generate Code'}
+                  <Button type="submit" size="xl" className="w-full" disabled={loading}>
+                    {loading ? 'Processing...' : 'Register Now'}
                   </Button>
                 </form>
 
-                <div className="mt-14 pt-10 border-t border-brand-gray/10 grid grid-cols-2 gap-8">
-                  <div className="flex flex-col gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center">
+                <div className="mt-16 pt-10 border-t border-brand-white/5 grid grid-cols-2 gap-10">
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center">
                       <Ticket className="w-5 h-5 text-brand-orange" />
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Loyalty</p>
-                      <p className="text-[12px] font-bold text-brand-white/70 leading-tight">10th Döner for Free</p>
+                      <p className="text-xs font-bold text-brand-white/50 leading-tight">10th Döner is on the house.</p>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-brand-orange/10 flex items-center justify-center">
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center">
                       <Gift className="w-5 h-5 text-brand-orange" />
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Welcome</p>
-                      <p className="text-[12px] font-bold text-brand-white/70 leading-tight">Free Fries on 1st Order</p>
+                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Free Fries on your 1st order.</p>
                     </div>
                   </div>
                 </div>
@@ -139,55 +145,66 @@ export default function RegisterPage() {
           ) : (
             <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.6, type: "spring", bounce: 0.3 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Card className="p-10 md:p-14 border-brand-orange/20 bg-brand-charcoal overflow-hidden relative shadow-[0_0_100px_rgba(230,126,34,0.15)] rounded-[40px] text-center">
-                <div className="absolute -top-10 -right-10 opacity-[0.03]">
-                  <CheckCircle2 className="w-64 h-64 text-brand-orange" />
-                </div>
+              <Card className="p-12 md:p-20 text-center relative overflow-hidden group" animate={false}>
+                {/* Shimmer effect */}
+                <motion.div
+                  animate={{ x: ['-100%', '100%'] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-orange/[0.03] to-transparent skew-x-12"
+                />
 
-                <div className="relative z-10 space-y-8">
-                  <div className="w-24 h-24 bg-brand-orange/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-brand-orange/20 rotate-12">
-                    <CheckCircle2 className="w-12 h-12 text-brand-orange -rotate-12" />
+                <div className="relative z-10 space-y-12">
+                  <div className="space-y-6">
+                    <div className="w-24 h-24 glass-orange rounded-full flex items-center justify-center mx-auto mb-4 border-brand-orange/30">
+                      <Sparkles className="w-10 h-10 text-brand-orange" />
+                    </div>
+                    <Badge variant="primary">Welcome to the Club</Badge>
+                    <h2 className="text-6xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+                      Privilege <br/> <span className="text-brand-orange">Activated.</span>
+                    </h2>
                   </div>
 
-                  <div className="space-y-3">
-                    <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">You're in!</h2>
-                    <p className="text-brand-white/40 text-sm font-medium">Show this code at the counter to claim your rewards.</p>
-                  </div>
-
-                  <div className="group relative py-10 px-8 bg-brand-black rounded-[32px] border-4 border-dashed border-brand-orange/20 inline-block w-full transition-colors hover:border-brand-orange/40">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange/60 mb-4">Your Membership Code</p>
-                    <p className="text-6xl md:text-8xl font-black tracking-[0.2em] text-brand-white select-all mb-6">{membershipCode}</p>
+                  <div className="space-y-6">
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/30">Your Personal Membership Code</p>
+                    <div className="bg-brand-black/80 border border-brand-white/5 rounded-[40px] p-12 relative group/code overflow-hidden">
+                      <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover/code:opacity-[0.02] transition-opacity" />
+                      <p className="text-7xl md:text-[100px] font-black tracking-[0.1em] text-brand-white select-all">{membershipCode}</p>
+                    </div>
 
                     <button
                       onClick={handleCopy}
-                      className="flex items-center gap-2 mx-auto bg-brand-orange/10 hover:bg-brand-orange/20 text-brand-orange px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
+                      className="flex items-center gap-3 mx-auto px-6 py-3 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95"
                     >
                       {copied ? (
                         <>
-                          <Check className="w-3 h-3" /> Copied to Clipboard
+                          <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Copied</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-3 h-3" /> Copy Code
+                          <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Copy to Clipboard</span>
                         </>
                       )}
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                    <Button variant="outline" className="h-14 rounded-2xl font-bold uppercase tracking-widest text-[11px]" onClick={() => window.print()}>
-                      Save / Print Code
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-brand-white/5">
+                    <Button variant="outline" size="lg" className="h-16" onClick={() => window.print()}>
+                      Save Voucher
                     </Button>
-                    <Link href="/" className="block">
-                      <Button variant="secondary" className="w-full h-14 rounded-2xl font-bold uppercase tracking-widest text-[11px]">
+                    <Link href="/">
+                      <Button variant="secondary" size="lg" className="w-full h-16">
                         Return Home
                       </Button>
                     </Link>
                   </div>
+
+                  <p className="text-[10px] font-bold text-brand-white/20 uppercase tracking-widest italic">
+                    *Show this code at the counter to redeem your rewards.
+                  </p>
                 </div>
               </Card>
             </motion.div>

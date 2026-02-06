@@ -7,9 +7,17 @@ export async function GET(
 ) {
   try {
     const { code } = await params
-    const customer = await prisma.customer.findUnique({
+
+    // Search by membership code first, then by phone if not found
+    let customer = await prisma.customer.findUnique({
       where: { membershipCode: code }
     })
+
+    if (!customer) {
+      customer = await prisma.customer.findFirst({
+        where: { phone: code }
+      })
+    }
 
     if (!customer) {
       return NextResponse.json({ error: 'Customer not found' }, { status: 404 })
