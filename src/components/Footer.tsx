@@ -1,9 +1,17 @@
+"use client"
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Badge } from './ui/Badge';
 import { Instagram, Facebook, Twitter } from 'lucide-react';
 
 export const Footer = () => {
+  const pathname = usePathname();
+
+  // Hide Footer on specific routes
+  const hideOn = ['/connect', '/seller', '/admin'];
+  if (hideOn.some(path => pathname?.startsWith(path))) return null;
+
   return (
     <footer className="bg-brand-black border-t border-brand-white/5 pt-32 pb-16">
       <div className="max-w-7xl mx-auto px-6">

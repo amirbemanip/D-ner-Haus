@@ -54,7 +54,7 @@ export default function Home() {
               transition={{ duration: 1, ease: "easeOut" }}
             >
               <Badge variant="primary" className="mb-6">Est. 2024 • Nürnberg</Badge>
-              <h1 className="text-[12vw] lg:text-[100px] font-black uppercase tracking-tighter leading-[0.8] mb-8">
+              <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-[0.8] mb-8">
                 The Art <br/> of <span className="text-brand-orange">Döner</span>
               </h1>
 
@@ -91,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* Stats / Proof Section */}
-      <section className="py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl">
+      <section className="py-12 md:py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
             { icon: Star, label: "4.9 Rating", sub: "Google Reviews" },
@@ -120,12 +120,12 @@ export default function Home() {
       </section>
 
       {/* Highlights Section */}
-      <section id="menu" className="py-40 bg-brand-black">
+      <section id="menu" className="py-20 md:py-40 bg-brand-black">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8">
             <div className="space-y-6">
               <Badge variant="outline">Curation</Badge>
-              <h2 className="text-7xl lg:text-[100px] font-black uppercase tracking-tighter leading-none">
+              <h2 className="text-5xl md:text-7xl lg:text-[100px] font-black uppercase tracking-tighter leading-none">
                 Signature <br/> <span className="text-outline">Collection</span>
               </h2>
             </div>
@@ -173,7 +173,7 @@ export default function Home() {
       </section>
 
       {/* About Section - Editorial Layout */}
-      <section id="about" className="py-40 bg-brand-charcoal relative overflow-hidden">
+      <section id="about" className="py-20 md:py-40 bg-brand-charcoal relative overflow-hidden">
         {/* Background text */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-brand-white/[0.02] uppercase tracking-tighter pointer-events-none select-none whitespace-nowrap">
           Nürnberg Excellence
@@ -202,7 +202,7 @@ export default function Home() {
 
           <div className="lg:col-span-5 space-y-10 relative z-10">
             <Badge variant="primary">Our Philosophy</Badge>
-            <h2 className="text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
+            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
               Driven by <br/> <span className="text-brand-orange">Obsession.</span>
             </h2>
             <div className="space-y-6">
@@ -229,12 +229,12 @@ export default function Home() {
       </section>
 
       {/* Rewards CTA - Extra Bold */}
-      <section className="py-40 bg-brand-orange relative overflow-hidden group">
+      <section className="py-20 md:py-40 bg-brand-orange relative overflow-hidden group">
         <div className="absolute inset-0 bg-brand-black opacity-0 group-hover:opacity-5 transition-opacity duration-700" />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-20">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 md:gap-20">
           <div className="text-brand-black space-y-10 max-w-3xl">
-            <h2 className="text-[12vw] lg:text-[140px] font-black uppercase tracking-tighter leading-[0.75]">
+            <h2 className="text-6xl md:text-[140px] font-black uppercase tracking-tighter leading-[0.75]">
               Elite <br/> <span className="text-brand-white">Club.</span>
             </h2>
             <p className="text-2xl lg:text-3xl font-black leading-tight max-w-xl">

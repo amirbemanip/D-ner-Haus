@@ -68,10 +68,10 @@ export default function RegisterPage() {
               exit={{ opacity: 0, y: -30 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Card className="p-12 md:p-16" animate={false}>
+              <Card className="p-6 md:p-16" animate={false}>
                 <div className="text-center space-y-6 mb-12">
                   <Badge variant="primary">Prestige Membership</Badge>
-                  <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none">
+                  <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
                     Join the <br/> <span className="text-brand-orange">Döner Elite</span>
                   </h1>
                   <p className="text-brand-white/40 text-sm font-medium max-w-sm mx-auto">
@@ -149,7 +149,7 @@ export default function RegisterPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Card className="p-12 md:p-20 text-center relative overflow-hidden group" animate={false}>
+              <Card className="p-6 md:p-20 text-center relative overflow-hidden group" animate={false}>
                 {/* Shimmer effect */}
                 <motion.div
                   animate={{ x: ['-100%', '100%'] }}
@@ -163,16 +163,16 @@ export default function RegisterPage() {
                       <Sparkles className="w-10 h-10 text-brand-orange" />
                     </div>
                     <Badge variant="primary">Welcome to the Club</Badge>
-                    <h2 className="text-6xl md:text-7xl font-black uppercase tracking-tighter leading-none">
+                    <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none">
                       Privilege <br/> <span className="text-brand-orange">Activated.</span>
                     </h2>
                   </div>
 
                   <div className="space-y-6">
                     <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/30">Your Personal Membership Code</p>
-                    <div className="bg-brand-black/80 border border-brand-white/5 rounded-[40px] p-12 relative group/code overflow-hidden">
+                    <div className="bg-brand-black/80 border border-brand-white/5 rounded-[40px] p-6 md:p-12 relative group/code overflow-hidden">
                       <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover/code:opacity-[0.02] transition-opacity" />
-                      <p className="text-7xl md:text-[100px] font-black tracking-[0.1em] text-brand-white select-all">{membershipCode}</p>
+                      <p className="text-5xl md:text-[100px] font-black tracking-[0.1em] text-brand-white select-all">{membershipCode}</p>
                     </div>
 
                     <button

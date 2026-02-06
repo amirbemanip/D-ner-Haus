@@ -1,9 +1,16 @@
 "use client"
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Button } from './ui/Button';
 
 export const Navbar = () => {
+  const pathname = usePathname();
+
+  // Hide Navbar on specific routes
+  const hideOn = ['/connect', '/seller', '/admin'];
+  if (hideOn.some(path => pathname?.startsWith(path))) return null;
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-brand-black/80 backdrop-blur-md border-b border-brand-gray/50">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">

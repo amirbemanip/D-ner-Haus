@@ -27,6 +27,7 @@ body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 /* Custom scrollbar for premium feel */
@@ -47,17 +48,18 @@ body {
   background: #E67E22;
 }
 
-/* Glassmorphism utility */
+/* Glassmorphism utility - Optimized for Safari performance */
 .glass {
   background: rgba(20, 20, 20, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .glass-orange {
   background: rgba(230, 126, 34, 0.1);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(230, 126, 34, 0.2);
 }
 

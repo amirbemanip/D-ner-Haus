@@ -8,19 +8,19 @@ import { Star, Users, ArrowRight } from 'lucide-react'
 export default function ConnectPage() {
   return (
     <div className="min-h-screen bg-[#0F0F0F] flex flex-col items-center justify-center p-6">
-      {/* Background Decor */}
+      {/* Background Decor - Reduced blur for Safari performance */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#E67E22]/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#E67E22]/5 blur-[120px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-[#E67E22]/5 blur-[80px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#E67E22]/5 blur-[80px] rounded-full" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md relative z-10 flex flex-col items-center"
+        className="w-full max-w-[340px] md:max-w-md relative z-10 flex flex-col items-center"
       >
         {/* Logo */}
-        <div className="relative w-32 h-32 mb-12 shadow-2xl">
+        <div className="relative w-24 h-24 md:w-32 md:h-32 mb-8 md:mb-12 shadow-2xl">
           <Image
             src="/logo.jpg"
             alt="Dönerhaus Logo"
@@ -29,7 +29,7 @@ export default function ConnectPage() {
           />
         </div>
 
-        <h1 className="text-3xl font-black text-[#F2F2F2] mb-2 uppercase tracking-tighter">Dönerhaus</h1>
+        <h1 className="text-2xl md:text-3xl font-black text-[#F2F2F2] mb-2 uppercase tracking-tighter">Dönerhaus</h1>
         <p className="text-[#E67E22] text-sm font-bold uppercase tracking-[0.3em] mb-12">Nürnberg</p>
 
         <div className="w-full space-y-6">
@@ -38,16 +38,16 @@ export default function ConnectPage() {
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#141414] border border-white/5 p-6 rounded-2xl flex items-center gap-6 hover:border-[#E67E22]/30 transition-all shadow-xl"
+              className="bg-[#141414] border border-white/5 p-5 md:p-6 rounded-2xl flex items-center gap-4 md:gap-6 hover:border-[#E67E22]/30 transition-all shadow-xl"
             >
-              <div className="w-14 h-14 bg-[#E67E22]/10 rounded-xl flex items-center justify-center group-hover:bg-[#E67E22] transition-colors">
-                <Users className="w-7 h-7 text-[#E67E22] group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-[#E67E22]/10 rounded-xl flex items-center justify-center group-hover:bg-[#E67E22] transition-colors shrink-0">
+                <Users className="w-6 h-6 md:w-7 md:h-7 text-[#E67E22] group-hover:text-white transition-colors" />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-bold text-white mb-1">Döner Elite Club</h2>
-                <p className="text-white/40 text-xs">Join for rewards & free Döner</p>
+                <h2 className="text-base md:text-lg font-bold text-white mb-1 leading-tight">Döner Elite Club</h2>
+                <p className="text-white/40 text-[10px] md:text-xs">Join for rewards & free Döner</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
             </motion.div>
           </Link>
 
@@ -60,16 +60,16 @@ export default function ConnectPage() {
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-[#141414] border border-white/5 p-6 rounded-2xl flex items-center gap-6 hover:border-[#E67E22]/30 transition-all shadow-xl"
+              className="bg-[#141414] border border-white/5 p-5 md:p-6 rounded-2xl flex items-center gap-4 md:gap-6 hover:border-[#E67E22]/30 transition-all shadow-xl"
             >
-              <div className="w-14 h-14 bg-[#E67E22]/10 rounded-xl flex items-center justify-center group-hover:bg-[#E67E22] transition-colors">
-                <Star className="w-7 h-7 text-[#E67E22] group-hover:text-white transition-colors" />
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-[#E67E22]/10 rounded-xl flex items-center justify-center group-hover:bg-[#E67E22] transition-colors shrink-0">
+                <Star className="w-6 h-6 md:w-7 md:h-7 text-[#E67E22] group-hover:text-white transition-colors" />
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-bold text-white mb-1 uppercase tracking-tight">Feedback</h2>
-                <p className="text-white/40 text-xs italic">Unterstütze uns mit deinem Feedback! ⭐</p>
+                <h2 className="text-base md:text-lg font-bold text-white mb-1 uppercase tracking-tight leading-tight">Feedback</h2>
+                <p className="text-white/40 text-[10px] md:text-xs italic">Share your experience! ⭐</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
             </motion.div>
           </Link>
         </div>
