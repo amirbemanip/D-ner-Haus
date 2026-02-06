@@ -1,0 +1,52 @@
+
+> my-app@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.6
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1878ms
+ ○ Compiling / ...
+ ✓ Compiled / in 15.3s (1512 modules)
+ GET / 200 in 16578ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ○ Compiling /club/register ...
+ ✓ Compiled /club/register in 1301ms (1520 modules)
+ GET / 200 in 285ms
+ GET /club/register 200 in 1643ms
+ ✓ Compiled /connect in 415ms (1519 modules)
+ GET /connect 200 in 586ms
+ GET /club/register 200 in 46ms
+ ○ Compiling /api/register ...
+ ✓ Compiled /api/register in 597ms (1539 modules)
+Registration error: Error [PrismaClientInitializationError]:
+Invalid `prisma.customer.findUnique()` invocation:
+
+
+Can't reach database server at `localhost:5432`
+
+Please make sure your database server is running at `localhost:5432`.
+    at async POST (src/app/api/register/route.ts:13:21)
+  11 |
+  12 |     // Check if customer already exists
+> 13 |     const existing = await prisma.customer.findUnique({
+     |                     ^
+  14 |       where: { phone }
+  15 |     })
+  16 | {
+  clientVersion: '6.2.1',
+  errorCode: undefined
+}
+ POST /api/register 500 in 1686ms
+ GET / 200 in 294ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ GET /club/register 200 in 48ms
+ GET /connect 200 in 42ms
+ GET /club/register 200 in 243ms
