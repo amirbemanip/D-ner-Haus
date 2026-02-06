@@ -29,18 +29,11 @@ Render uses an ephemeral filesystem, so your local SQLite database (`dev.db`) wi
 
 ## ⚙️ Step 2: Prepare the Code | مرحله ۲: آماده‌سازی کد
 
-Before pushing to GitHub, you need to tell Prisma to use PostgreSQL instead of SQLite.
-قبل از آپلود در گیت‌هاب، باید به Prisma بگویید که از PostgreSQL استفاده کند.
+The code is already pre-configured to use **PostgreSQL** for professional production environments like Render. You don't need to change the schema manually.
 
-1.  Open `prisma/schema.prisma`.
-2.  Change the `datasource` block to:
-    ```prisma
-    datasource db {
-      provider = "postgresql"
-      url      = env("DATABASE_URL")
-    }
-    ```
-3.  Commit and Push your changes to GitHub.
+کد از قبل برای استفاده از **PostgreSQL** در محیط‌های حرفه‌ای (مانند رندر) تنظیم شده است. نیازی به تغییر دستی اسکیما نیست.
+
+1.  Commit and Push the latest changes to your GitHub repository.
 
 ---
 
