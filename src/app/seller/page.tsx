@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Search, User, Ticket, Gift, Plus, Check, RefreshCw } from 'lucide-react';
+import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X } from 'lucide-react';
 
 export default function SellerPage() {
   const [code, setCode] = useState('');
@@ -60,143 +60,168 @@ export default function SellerPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto py-32 px-6 min-h-screen">
-      <div className="flex items-center justify-between mb-12">
-        <div className="flex flex-col">
-          <h1 className="text-4xl font-black uppercase tracking-tighter leading-none">POS Terminal</h1>
-          <span className="text-brand-orange text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Dönerhaus Nürnberg</span>
-        </div>
-        <Badge variant="secondary">Terminal #01</Badge>
-      </div>
-
-      <Card className="mb-10 bg-brand-charcoal/30 border-brand-gray/30 p-8">
-        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-white/20 w-5 h-5" />
-            <Input
-              placeholder="Enter Membership Code (e.g. 123456)"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="pl-12 text-xl font-bold tracking-[0.3em] placeholder:tracking-normal placeholder:font-medium h-16"
-            />
+    <div className="min-h-screen bg-brand-black pt-32 pb-20 px-6">
+      <div className="max-w-5xl mx-auto space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-brand-white/5 pb-12">
+          <div className="space-y-4">
+            <Badge variant="primary">POS Terminal v1.2</Badge>
+            <h1 className="text-6xl font-black uppercase tracking-tighter leading-none">Checkout <br/> <span className="text-brand-orange">Control</span></h1>
           </div>
-          <Button type="submit" size="lg" disabled={loading} className="h-16 px-10">
-            {loading ? <RefreshCw className="animate-spin" /> : 'Search Member'}
-          </Button>
-        </form>
-      </Card>
-
-      {error && (
-        <div className="text-red-500 font-bold bg-red-500/10 p-6 rounded-2xl border border-red-500/10 mb-8 animate-in fade-in slide-in-from-top-4">
-          Error: {error}
-        </div>
-      )}
-
-      {message && (
-        <div className="text-green-500 font-bold bg-green-500/10 p-6 rounded-2xl border border-green-500/10 mb-8 flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
-          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-            <Check className="text-brand-black w-4 h-4 stroke-[3]" />
+          <div className="text-right hidden md:block">
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20">Authorized Terminal</p>
+            <p className="text-lg font-bold">Nürnberg Center #01</p>
           </div>
-          {message}
         </div>
-      )}
 
-      {customer ? (
-        <Card className="p-10 border-brand-orange/30 bg-brand-charcoal/50 shadow-2xl rounded-[32px] animate-in fade-in zoom-in-95 duration-300">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            <div className="space-y-8">
-              <div className="flex items-center gap-6">
-                <div className="w-20 h-20 bg-brand-orange/10 rounded-3xl flex items-center justify-center border border-brand-orange/20 rotate-3">
-                  <User className="w-10 h-10 text-brand-orange -rotate-3" />
-                </div>
-                <div>
-                  <h2 className="text-3xl font-black uppercase tracking-tight leading-none">{customer.name}</h2>
-                  <p className="text-brand-white/40 font-mono text-sm mt-2 tracking-widest">{customer.phone}</p>
-                  <Badge variant="outline" className="mt-3">Member since {new Date(customer.createdAt).toLocaleDateString()}</Badge>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-brand-black/50 p-6 rounded-2xl border border-brand-gray/20 text-center space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange/60">Current Stamps</p>
-                  <p className="text-5xl font-black">{customer.coupons}</p>
-                </div>
-                <div className="bg-brand-black/50 p-6 rounded-2xl border border-brand-gray/20 text-center space-y-2">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange/60">Free Rewards</p>
-                  <p className={`text-5xl font-black ${customer.coupons >= 10 ? 'text-green-500' : 'text-brand-white'}`}>
-                    {Math.floor(customer.coupons / 10)}
-                  </p>
-                </div>
-              </div>
-
-              {!customer.receivedFirstGift && (
-                <div className="bg-brand-orange p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_0_30px_rgba(230,126,34,0.4)] animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <Gift className="text-brand-black w-7 h-7" />
-                    <div className="flex flex-col">
-                      <span className="font-black text-brand-black uppercase tracking-tighter text-lg leading-none">Welcome Gift!</span>
-                      <span className="text-brand-black/60 text-[10px] font-bold uppercase tracking-widest">Free Fries Available</span>
-                    </div>
-                  </div>
-                  <Button size="sm" className="bg-brand-black text-brand-orange hover:bg-brand-charcoal px-6 h-10 rounded-full font-black uppercase tracking-widest text-[10px]" onClick={() => handleAction('redeem_fries')} disabled={loading}>
-                    Redeem Now
-                  </Button>
-                </div>
-              )}
-
-              {customer.coupons >= 10 && (
-                <div className="bg-green-500 p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-[0_0_30px_rgba(34,197,94,0.4)]">
-                  <div className="flex items-center gap-3">
-                    <Ticket className="text-brand-black w-7 h-7" />
-                    <div className="flex flex-col">
-                      <span className="font-black text-brand-black uppercase tracking-tighter text-lg leading-none">Loyalty Reward!</span>
-                      <span className="text-brand-black/60 text-[10px] font-bold uppercase tracking-widest">Free Döner Available</span>
-                    </div>
-                  </div>
-                  <Button size="sm" className="bg-brand-black text-green-500 hover:bg-brand-charcoal px-6 h-10 rounded-full font-black uppercase tracking-widest text-[10px]" onClick={() => handleAction('redeem_doner')} disabled={loading}>
-                    Redeem Now
-                  </Button>
-                </div>
-              )}
+        <Card className="p-8 bg-brand-charcoal/50" animate={false}>
+          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-white/20 w-6 h-6" />
+              <input
+                placeholder="6-Digit Code or Phone"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="w-full h-20 bg-brand-black border border-brand-white/5 rounded-2xl pl-16 pr-6 text-2xl font-black tracking-widest placeholder:tracking-normal placeholder:font-medium outline-none focus:border-brand-orange/50 transition-all"
+              />
             </div>
-
-            <div className="space-y-6">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-white/20 mb-2">POS Actions</h3>
-
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full h-24 text-2xl font-black uppercase tracking-tighter rounded-2xl"
-                onClick={() => handleAction('add_purchase')}
-                disabled={loading}
-              >
-                <Plus className="mr-3 w-8 h-8" /> Add Purchase
-              </Button>
-
-              <div className="grid grid-cols-1 gap-4">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full h-16 rounded-xl font-bold uppercase tracking-widest text-xs"
-                  onClick={() => handleAction('redeem_doner')}
-                  disabled={loading || customer.coupons < 10}
-                >
-                  <Ticket className="mr-3 w-5 h-5" /> Redeem Free Döner
-                </Button>
-
-                <Button variant="secondary" className="w-full h-14 rounded-xl font-bold uppercase tracking-widest text-[10px] opacity-40 hover:opacity-100" onClick={() => {setCustomer(null); setCode('');}}>
-                  Close Customer Session
-                </Button>
-              </div>
-            </div>
-          </div>
+            <Button type="submit" size="xl" disabled={loading} className="md:w-64 h-20">
+              {loading ? <RefreshCw className="animate-spin" /> : 'Search Member'}
+            </Button>
+          </form>
         </Card>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 opacity-20">
-          <Ticket className="w-32 h-32" />
-          <p className="text-xl font-bold uppercase tracking-widest">Awaiting Customer Scan</p>
-        </div>
-      )}
+
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-red-500 font-bold bg-red-500/5 p-8 rounded-2xl border border-red-500/20 text-center"
+            >
+              Error: {error}
+            </motion.div>
+          )}
+
+          {message && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="text-green-500 font-bold bg-green-500/5 p-8 rounded-2xl border border-green-500/20 flex items-center justify-center gap-4"
+            >
+              <Check className="w-6 h-6" />
+              {message}
+            </motion.div>
+          )}
+
+          {customer ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <Card className="p-12 md:p-16 border-brand-orange/20" animate={false}>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                  <div className="lg:col-span-7 space-y-12">
+                    <div className="flex items-center gap-8">
+                      <div className="w-24 h-24 glass-orange rounded-3xl flex items-center justify-center border-brand-orange/30 rotate-3">
+                        <User className="w-12 h-12 text-brand-orange -rotate-3" />
+                      </div>
+                      <div className="space-y-2">
+                        <h2 className="text-5xl font-black uppercase tracking-tighter leading-none">{customer.name}</h2>
+                        <p className="text-brand-orange font-mono text-lg tracking-[0.2em]">{customer.membershipCode}</p>
+                        <Badge variant="outline">{customer.phone}</Badge>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8">
+                      <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Total Stamps</p>
+                        <p className="text-6xl font-black">{customer.coupons}</p>
+                      </div>
+                      <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Next Reward</p>
+                        <p className="text-6xl font-black text-brand-orange">{10 - (customer.coupons % 10)}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {!customer.receivedFirstGift && (
+                        <motion.div
+                          initial={{ x: -20, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          className="bg-brand-orange p-8 rounded-3xl flex items-center justify-between shadow-[0_20px_50px_rgba(230,126,34,0.2)]"
+                        >
+                          <div className="flex items-center gap-4 text-brand-black">
+                            <Gift className="w-8 h-8" />
+                            <div>
+                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Welcome Reward</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Free Signature Fries</p>
+                            </div>
+                          </div>
+                          <Button variant="secondary" size="sm" onClick={() => handleAction('redeem_fries')} disabled={loading}>
+                            Redeem
+                          </Button>
+                        </motion.div>
+                      )}
+
+                      {customer.coupons >= 10 && (
+                        <motion.div
+                          initial={{ x: -20, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          className="bg-green-500 p-8 rounded-3xl flex items-center justify-between shadow-[0_20px_50px_rgba(34,197,94,0.2)]"
+                        >
+                          <div className="flex items-center gap-4 text-brand-black">
+                            <Ticket className="w-8 h-8" />
+                            <div>
+                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Loyalty Free Döner</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">{Math.floor(customer.coupons / 10)} Available</p>
+                            </div>
+                          </div>
+                          <Button variant="secondary" size="sm" className="bg-brand-black text-green-500" onClick={() => handleAction('redeem_doner')} disabled={loading}>
+                            Redeem
+                          </Button>
+                        </motion.div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-5 flex flex-col gap-6">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20 mb-2">Terminal Actions</h3>
+
+                    <Button
+                      variant="primary"
+                      className="h-32 text-3xl font-black rounded-[32px]"
+                      onClick={() => handleAction('add_purchase')}
+                      disabled={loading}
+                    >
+                      <Plus className="mr-4 w-8 h-8 stroke-[3]" /> Add Stamp
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="h-20 rounded-2xl opacity-50 hover:opacity-100"
+                      onClick={() => {setCustomer(null); setCode('');}}
+                    >
+                      <X className="mr-3 w-5 h-5" /> End Session
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="py-40 flex flex-col items-center justify-center text-center space-y-8 opacity-10"
+            >
+              <Ticket className="w-32 h-32 stroke-[1]" />
+              <p className="text-2xl font-black uppercase tracking-[0.5em]">Scan Member to Begin</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
