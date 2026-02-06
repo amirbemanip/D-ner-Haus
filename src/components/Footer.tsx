@@ -52,11 +52,15 @@ export const Footer = () => {
           <div className="md:col-span-3 space-y-8">
             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Location</h4>
             <div className="space-y-4">
-              <p className="text-sm font-bold uppercase tracking-widest text-brand-white/60 leading-loose">
+              <Link
+                href="https://maps.app.goo.gl/WDt9y5Q3akE63pgR6"
+                target="_blank"
+                className="block text-sm font-bold uppercase tracking-widest text-brand-white/60 hover:text-brand-orange transition-colors leading-loose"
+              >
                 Königstraße 12 <br/>
                 90402 Nürnberg <br/>
                 Germany
-              </p>
+              </Link>
               <Badge variant="outline">Open daily until 22:00</Badge>
             </div>
           </div>

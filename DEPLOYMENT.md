@@ -75,6 +75,7 @@ Once live, your site will be at `https://your-site.onrender.com`.
 بعد از آنلاین شدن، آدرس‌های شما به این صورت خواهد بود:
 
 *   **Main Site:** `/` (Customer registration)
+*   **Connect Page:** `/connect` (Linktree-style page for Club & Google Review)
 *   **Seller POS:** `/seller` (For the cashier)
 *   **Admin Panel:** `/admin` (Management analytics)
 
