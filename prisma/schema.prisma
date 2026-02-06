@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id               String   @id @default(cuid())
+  name             String
+  phone            String   @unique
+  membershipCode   String   @unique
+  coupons          Int      @default(0) // Number of stamps toward free döner
+  receivedFirstGift Boolean  @default(false) // Whether they received the first-purchase free fries
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
