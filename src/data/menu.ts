@@ -10,41 +10,41 @@ export interface MenuItem {
 export const menuItems: MenuItem[] = [
   {
     id: 'classic-doner',
-    title: 'Classic Döner',
+    title: 'Klassischer Döner',
     price: '€7.50',
-    description: 'Traditional veal döner with fresh salad and our signature garlic sauce in toasted bread.',
+    description: 'Traditioneller Kalbsdöner mit frischem Salat und unserer hausgemachten Knoblauchsauce in geröstetem Brot.',
     image: 'https://images.unsplash.com/photo-1561651823-34feb02250e4?q=80&w=800&auto=format&fit=crop',
     category: 'doner'
   },
   {
     id: 'chicken-doner',
-    title: 'Chicken Döner',
+    title: 'Hähnchen Döner',
     price: '€7.00',
-    description: 'Marinated chicken breast, thinly sliced and served with zesty yogurt sauce and mixed greens.',
+    description: 'Marinierte Hähnchenbrust, dünn geschnitten, serviert mit pikanter Joghurtsauce und gemischtem Salat.',
     image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=800&auto=format&fit=crop',
     category: 'doner'
   },
   {
     id: 'veggie-doner',
-    title: 'Veggie Döner',
+    title: 'Vegetarischer Döner',
     price: '€6.50',
-    description: 'Crispy falafel or grilled vegetables with hummus and fresh salad in our artisanal bread.',
+    description: 'Knusprige Falafel oder gegrilltes Gemüse mit Hummus und frischem Salat in unserem handwerklichen Brot.',
     image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?q=80&w=800&auto=format&fit=crop',
     category: 'doner'
   },
   {
     id: 'fries',
-    title: 'Signature Fries',
+    title: 'Signature Pommes',
     price: '€4.50',
-    description: 'Golden crispy fries seasoned with our house blend of spices.',
+    description: 'Goldbraun knusprige Pommes, gewürzt mit unserer hauseigenen Gewürzmischung.',
     image: 'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?q=80&w=800&auto=format&fit=crop',
     category: 'side'
   },
   {
     id: 'drinks',
-    title: 'Cold Drinks',
+    title: 'Kalte Getränke',
     price: '€3.00',
-    description: 'Selection of refreshing soft drinks, Ayran, and mineral water.',
+    description: 'Auswahl an erfrischenden Softdrinks, Ayran und Mineralwasser.',
     image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?q=80&w=800&auto=format&fit=crop',
     category: 'drink'
   }

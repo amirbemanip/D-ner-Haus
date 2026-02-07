@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const { name, phone } = await request.json()
 
     if (!name || !phone) {
-      return NextResponse.json({ error: 'Name and phone are required' }, { status: 400 })
+      return NextResponse.json({ error: 'Name und Telefonnummer sind erforderlich' }, { status: 400 })
     }
 
     // Check if customer already exists
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     if (existing) {
       return NextResponse.json({
-        error: 'Phone number already registered',
+        error: 'Telefonnummer bereits registriert',
         membershipCode: existing.membershipCode
       }, { status: 400 })
     }
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     if (!isUnique) {
-      return NextResponse.json({ error: 'Could not generate membership code' }, { status: 500 })
+      return NextResponse.json({ error: 'Mitgliedschaftscode konnte nicht generiert werden' }, { status: 500 })
     }
 
     const customer = await prisma.customer.create({
@@ -49,6 +49,6 @@ export async function POST(request: Request) {
     return NextResponse.json(customer)
   } catch (error: any) {
     console.error('Registration error:', error)
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: error.message || 'Interner Serverfehler' }, { status: 500 })
   }
 }

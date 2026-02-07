@@ -53,25 +53,25 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <Badge variant="primary" className="mb-6">Est. 2024 • Nürnberg</Badge>
+              <Badge variant="primary" className="mb-6">Seit 2024 • Nürnberg</Badge>
               <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-[0.8] mb-8">
-                The Art <br/> of <span className="text-brand-orange">Döner</span>
+                Die Kunst <br/> des <span className="text-brand-orange">Döners</span>
               </h1>
 
               <div className="flex items-start gap-8 mb-12">
                 <div className="w-[1px] h-24 bg-brand-orange/30 mt-2" />
                 <p className="text-lg md:text-xl text-brand-white/60 font-medium max-w-lg leading-relaxed italic">
-                  "Redefining German-Turkish street food culture through obsession with quality and modern culinary craftsmanship."
+                  "Neudefinition der deutsch-türkischen Street-Food-Kultur durch Leidenschaft für Qualität und modernes kulinarisches Handwerk."
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center gap-6">
                 <Button size="xl" className="w-full sm:w-auto group">
-                  Explore Menu <ArrowDownRight className="ml-2 w-5 h-5 group-hover:rotate-45 transition-transform" />
+                  Speisekarte <ArrowDownRight className="ml-2 w-5 h-5 group-hover:rotate-45 transition-transform" />
                 </Button>
                 <Link href="/club/register" className="w-full sm:w-auto">
                   <Button variant="outline" size="xl" className="w-full sm:w-auto">
-                    Join the Club
+                    Tritt dem Club bei
                   </Button>
                 </Link>
               </div>
@@ -86,7 +86,7 @@ export default function Home() {
           className="absolute bottom-10 left-6 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/20"
         >
           <span className="w-12 h-[1px] bg-brand-white/10" />
-          Scroll to Explore
+          Scrollen zum Entdecken
         </motion.div>
       </section>
 
@@ -94,10 +94,10 @@ export default function Home() {
       <section className="py-12 md:py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
-            { icon: Star, label: "4.9 Rating", sub: "Google Reviews" },
-            { icon: Clock, label: "Daily", sub: "11:00 - 22:00" },
-            { icon: MapPin, label: "Nürnberg", sub: "City Center" },
-            { icon: Sparkles, label: "Premium", sub: "Local Sourcing" }
+            { icon: Star, label: "4.9 Bewertung", sub: "Google Bewertungen" },
+            { icon: Clock, label: "Täglich", sub: "11:00 - 22:00" },
+            { icon: MapPin, label: "Nürnberg", sub: "Stadtzentrum" },
+            { icon: Sparkles, label: "Premium", sub: "Lokaler Bezug" }
           ].map((item, i) => (
             <motion.div
               key={i}
@@ -124,13 +124,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8">
             <div className="space-y-6">
-              <Badge variant="outline">Curation</Badge>
+              <Badge variant="outline">Kuration</Badge>
               <h2 className="text-5xl md:text-7xl lg:text-[100px] font-black uppercase tracking-tighter leading-none">
-                Signature <br/> <span className="text-outline">Collection</span>
+                Signature <br/> <span className="text-outline">Kollektion</span>
               </h2>
             </div>
             <p className="text-brand-white/40 max-w-sm font-medium leading-relaxed">
-              Every dish in our signature collection is a result of months of experimentation with flavors and textures.
+              Jedes Gericht in unserer Signature-Kollektion ist das Ergebnis monatelanger Experimente mit Aromen und Texturen.
             </p>
           </div>
 
@@ -162,7 +162,7 @@ export default function Home() {
                     <h3 className="text-3xl font-black uppercase tracking-tighter">{item.title}</h3>
                     <p className="text-brand-white/40 text-sm leading-relaxed font-medium min-h-[60px]">{item.description}</p>
                     <Button variant="outline" className="w-full mt-4 h-14 group">
-                      Order Now <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      Jetzt bestellen <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </div>
                 </Card>
@@ -176,7 +176,7 @@ export default function Home() {
       <section id="about" className="py-20 md:py-40 bg-brand-charcoal relative overflow-hidden">
         {/* Background text */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-brand-white/[0.02] uppercase tracking-tighter pointer-events-none select-none whitespace-nowrap">
-          Nürnberg Excellence
+          Nürnberger Exzellenz
         </div>
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
@@ -196,32 +196,32 @@ export default function Home() {
             </motion.div>
             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand-orange rounded-2xl flex flex-col items-center justify-center p-8 text-brand-black hidden md:flex">
               <span className="text-6xl font-black leading-none">100%</span>
-              <span className="text-xs font-black uppercase tracking-widest mt-2 text-center">Premium Ingredients Only</span>
+              <span className="text-xs font-black uppercase tracking-widest mt-2 text-center">Nur Premium-Zutaten</span>
             </div>
           </div>
 
           <div className="lg:col-span-5 space-y-10 relative z-10">
-            <Badge variant="primary">Our Philosophy</Badge>
+            <Badge variant="primary">Unsere Philosophie</Badge>
             <h2 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
-              Driven by <br/> <span className="text-brand-orange">Obsession.</span>
+              Getrieben von <br/> <span className="text-brand-orange">Leidenschaft.</span>
             </h2>
             <div className="space-y-6">
               <p className="text-xl text-brand-white/70 leading-relaxed font-medium">
-                We didn't just build another döner shop. We built a sanctuary for flavor.
+                Wir haben nicht einfach nur einen weiteren Dönerladen gebaut. Wir haben ein Heiligtum für Geschmack geschaffen.
               </p>
               <p className="text-lg text-brand-white/40 leading-relaxed font-medium">
-                Every skewer is a masterpiece of marination. Every sauce is a secret kept under lock and key. We believe that street food deserves the same respect as fine dining.
+                Jeder Spieß ist ein Meisterwerk der Marinierung. Jede Sauce ist ein unter Verschluss gehaltenes Geheimnis. Wir glauben, dass Street Food den gleichen Respekt verdient wie Fine Dining.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-12 pt-10 border-t border-brand-white/5">
               <div>
-                <h4 className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-4">Daily</h4>
-                <p className="text-2xl font-black">Fresh Bread</p>
+                <h4 className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-4">Täglich</h4>
+                <p className="text-2xl font-black">Frisches Brot</p>
               </div>
               <div>
                 <h4 className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-4">Original</h4>
-                <p className="text-2xl font-black">Family Sauce</p>
+                <p className="text-2xl font-black">Familiensauce</p>
               </div>
             </div>
           </div>
@@ -238,10 +238,10 @@ export default function Home() {
               Elite <br/> <span className="text-brand-white">Club.</span>
             </h2>
             <p className="text-2xl lg:text-3xl font-black leading-tight max-w-xl">
-              LOYALTY HAS ITS REWARDS. GET YOUR 10TH DÖNER FOR FREE.
+              LOYALITÄT ZAHLT SICH AUS. DER 10. DÖNER GEHT AUF UNS.
             </p>
             <div className="flex flex-wrap gap-4">
-              {["Free Welcome Fries", "Priority Access", "Exclusive Events"].map((f, i) => (
+              {["Kostenlose Willkommens-Pommes", "Prioritäts-Zugang", "Exklusive Events"].map((f, i) => (
                 <div key={i} className="px-5 py-2 rounded-full border border-brand-black/20 text-[10px] font-black uppercase tracking-widest bg-brand-black/5">
                   {f}
                 </div>
@@ -252,7 +252,7 @@ export default function Home() {
           <Link href="/club/register" className="w-full lg:w-auto">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button size="xl" variant="secondary" className="bg-brand-black text-brand-orange hover:bg-brand-charcoal px-20 py-12 text-4xl rounded-full w-full lg:w-auto shadow-2xl shadow-brand-black/40">
-                Join Now
+                Jetzt beitreten
               </Button>
             </motion.div>
           </Link>

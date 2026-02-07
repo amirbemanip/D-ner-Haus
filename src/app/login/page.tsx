@@ -30,10 +30,10 @@ function LoginContent() {
         router.push(from)
         router.refresh()
       } else {
-        setError('Invalid access key. Please try again.')
+        setError('Ungültiger Code. Bitte versuchen Sie es erneut.')
       }
     } catch (err) {
-      setError('An error occurred. Please try again.')
+      setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
     } finally {
       setIsLoading(false)
     }
@@ -50,8 +50,8 @@ function LoginContent() {
         />
       </div>
 
-      <h1 className="text-2xl font-bold text-[#F2F2F2] mb-2 text-center">Protected Access</h1>
-      <p className="text-[#F2F2F2]/60 text-sm mb-8 text-center">Enter your terminal access key to continue</p>
+      <h1 className="text-2xl font-bold text-[#F2F2F2] mb-2 text-center">Geschützter Zugang</h1>
+      <p className="text-[#F2F2F2]/60 text-sm mb-8 text-center">Geben Sie Ihren Zugangs-Code ein, um fortzufahren</p>
 
       <form onSubmit={handleSubmit} className="w-full space-y-4">
         <div className="relative">
@@ -60,7 +60,7 @@ function LoginContent() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Access Key"
+            placeholder="Zugangs-Code"
             className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl py-4 pl-12 pr-4 text-[#F2F2F2] focus:outline-none focus:ring-2 focus:ring-[#E67E22]/50 transition-all placeholder:text-white/20"
             required
           />
@@ -79,7 +79,7 @@ function LoginContent() {
             <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
             <>
-              Authenticate
+              Anmelden
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </>
           )}

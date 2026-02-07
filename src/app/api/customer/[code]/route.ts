@@ -20,12 +20,12 @@ export async function GET(
     }
 
     if (!customer) {
-      return NextResponse.json({ error: 'Customer not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Kunde nicht gefunden' }, { status: 404 })
     }
 
     return NextResponse.json(customer)
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: error.message || 'Interner Serverfehler' }, { status: 500 })
   }
 }
 
@@ -43,7 +43,7 @@ export async function PATCH(
     })
 
     if (!customer) {
-      return NextResponse.json({ error: 'Customer not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Kunde nicht gefunden' }, { status: 404 })
     }
 
     let updateData: any = {}
@@ -52,16 +52,16 @@ export async function PATCH(
       updateData.coupons = customer.coupons + 1
     } else if (action === 'redeem_doner') {
       if (customer.coupons < 10) {
-        return NextResponse.json({ error: 'Not enough coupons' }, { status: 400 })
+        return NextResponse.json({ error: 'Nicht genügend Stempel' }, { status: 400 })
       }
       updateData.coupons = customer.coupons - 10
     } else if (action === 'redeem_fries') {
       if (customer.receivedFirstGift) {
-        return NextResponse.json({ error: 'First gift already received' }, { status: 400 })
+        return NextResponse.json({ error: 'Willkommensgeschenk bereits erhalten' }, { status: 400 })
       }
       updateData.receivedFirstGift = true
     } else {
-      return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
+      return NextResponse.json({ error: 'Ungültige Aktion' }, { status: 400 })
     }
 
     const updatedCustomer = await prisma.customer.update({
@@ -71,6 +71,6 @@ export async function PATCH(
 
     return NextResponse.json(updatedCustomer)
   } catch (error: any) {
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: error.message || 'Interner Serverfehler' }, { status: 500 })
   }
 }
