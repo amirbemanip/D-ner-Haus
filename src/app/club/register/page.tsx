@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { CheckCircle2, Ticket, Gift, Copy, Check, Sparkles } from 'lucide-react';
+import { CheckCircle2, Ticket, Gift, Copy, Check, Sparkles, Download, Printer } from 'lucide-react';
 import Link from 'next/link';
+import { toPng } from 'html-to-image';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: '', phone: '' });
@@ -13,6 +14,21 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [membershipCode, setMembershipCode] = useState('');
   const [copied, setCopied] = useState(false);
+  const cardRef = React.useRef<HTMLDivElement>(null);
+
+  const handleDownload = async () => {
+    if (cardRef.current === null) return;
+
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
+      const link = document.createElement('a');
+      link.download = `donerhaus-vip-card-${membershipCode}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('oops, something went wrong!', err);
+    }
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(membershipCode);
@@ -168,33 +184,72 @@ export default function RegisterPage() {
                     </h2>
                   </div>
 
-                  <div className="space-y-6">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/30">Dein persönlicher Mitgliedschaftscode</p>
-                    <div className="bg-brand-black/80 border border-brand-white/5 rounded-[40px] p-6 md:p-12 relative group/code overflow-hidden">
-                      <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover/code:opacity-[0.02] transition-opacity" />
-                      <p className="text-5xl md:text-[100px] font-black tracking-[0.1em] text-brand-white select-all">{membershipCode}</p>
+                  <div className="space-y-12">
+                    {/* VIP Card Preview */}
+                    <div className="relative group/card">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-brand-orange to-brand-orange-light rounded-[20px] blur opacity-20 group-hover/card:opacity-40 transition duration-1000"></div>
+                      <div
+                        ref={cardRef}
+                        className="print-card relative w-full max-w-[450px] mx-auto bg-brand-black border border-brand-white/10 rounded-[20px] overflow-hidden aspect-[1.6/1] flex flex-col justify-between p-8 text-left shadow-2xl"
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange mb-1">Dönerhaus Nürnberg</p>
+                            <h3 className="text-2xl font-black uppercase tracking-tighter">Elite Member</h3>
+                          </div>
+                          <div className="w-10 h-10 glass-orange rounded-xl flex items-center justify-center">
+                            <Sparkles className="w-5 h-5 text-brand-orange" />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-[8px] font-black uppercase tracking-[0.4em] text-brand-white/20">Mitgliedschaftscode</p>
+                          <p className="text-4xl md:text-5xl font-black tracking-[0.15em] text-brand-white">{membershipCode}</p>
+                        </div>
+
+                        <div className="flex justify-between items-end border-t border-brand-white/5 pt-6">
+                          <div>
+                            <p className="text-[8px] font-black uppercase tracking-widest text-brand-white/30 mb-0.5">Inhaber</p>
+                            <p className="text-xs font-bold uppercase tracking-tighter">{formData.name}</p>
+                          </div>
+                          <p className="text-[8px] font-bold italic text-brand-white/20 uppercase tracking-widest">Gültig in allen Filialen</p>
+                        </div>
+                      </div>
                     </div>
 
-                    <button
-                      onClick={handleCopy}
-                      className="flex items-center gap-3 mx-auto px-6 py-3 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95"
-                    >
-                      {copied ? (
-                        <>
-                          <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Kopiert</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">In Zwischenablage kopieren</span>
-                        </>
-                      )}
-                    </button>
+                    <div className="flex flex-wrap justify-center gap-4">
+                      <button
+                        onClick={handleCopy}
+                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
+                      >
+                        {copied ? (
+                          <>
+                            <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Kopiert</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Code kopieren</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={handleDownload}
+                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
+                      >
+                        <Download className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Als Bild speichern</span>
+                      </button>
+
+                      <button
+                        onClick={() => window.print()}
+                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
+                      >
+                        <Printer className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Karte Drucken</span>
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-brand-white/5">
-                    <Button variant="outline" size="lg" className="h-16" onClick={() => window.print()}>
-                      Gutschein speichern
-                    </Button>
+                  <div className="grid grid-cols-1 gap-6 pt-10 border-t border-brand-white/5">
                     <Link href="/">
                       <Button variant="secondary" size="lg" className="w-full h-16">
                         Zurück zur Startseite

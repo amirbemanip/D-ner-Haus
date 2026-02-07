@@ -91,8 +91,15 @@ export default function Home() {
       </section>
 
       {/* Stats / Proof Section */}
-      <section className="py-12 md:py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+      <section className="py-12 md:py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl relative overflow-hidden">
+        {/* Subtly animated gradient background */}
+        <motion.div
+          animate={{ opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity }}
+          className="absolute inset-0 bg-gradient-to-r from-brand-orange/5 via-transparent to-brand-orange/5"
+        />
+
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 relative z-10">
           {[
             { icon: Star, label: "4.9 Bewertung", sub: "Google Bewertungen" },
             { icon: Clock, label: "Täglich", sub: "11:00 - 22:00" },
@@ -116,6 +123,53 @@ export default function Home() {
               </div>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      {/* Awards & Recognition Section */}
+      <section className="py-20 bg-brand-black border-b border-brand-white/5 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12 justify-between">
+            <div className="flex-1 space-y-8">
+              <div className="flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-brand-orange" />
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange">Anerkennung</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-none">
+                Einer der <span className="text-brand-orange italic">Besten</span> in Nürnberg.
+              </h2>
+              <p className="text-brand-white/40 font-medium max-w-xl leading-relaxed">
+                Wir sind stolz darauf, von <span className="text-brand-white">DeinNaimberch</span> offiziell als einer der 6 besten Dönerläden Nürnbergs ausgezeichnet worden zu sein. Diese Anerkennung bestärkt uns in unserem Anspruch an höchste Qualität.
+              </p>
+              <a
+                href="https://deinnaemberch.de/die-6-besten-doener-in-nuernberg/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-4 group"
+              >
+                <div className="w-12 h-12 rounded-full glass border border-brand-white/10 flex items-center justify-center group-hover:border-brand-orange transition-colors">
+                  <ArrowDownRight className="w-5 h-5 group-hover:rotate-45 transition-transform" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest group-hover:text-brand-orange transition-colors">Artikel lesen</span>
+              </a>
+            </div>
+
+            <div className="flex-1 relative">
+              <div className="relative group cursor-pointer">
+                <div className="absolute -inset-4 bg-brand-orange/20 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative glass border border-brand-white/10 rounded-[40px] p-10 md:p-16 flex flex-col items-center text-center space-y-6">
+                  <div className="w-20 h-20 glass-orange rounded-3xl flex items-center justify-center mb-4">
+                    <Star className="w-10 h-10 text-brand-orange fill-brand-orange" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/40">Top Ranking 2024</p>
+                    <p className="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Die Top 6 Elite</p>
+                  </div>
+                  <p className="text-xs font-bold text-brand-white/20 uppercase tracking-[0.3em]">Nürnbergs Döner-Kultur</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

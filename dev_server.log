@@ -8,96 +8,36 @@
    - Environments: .env
 
  ✓ Starting...
- ✓ Ready in 1878ms
+ ✓ Ready in 2.7s
  ○ Compiling / ...
- ✓ Compiled / in 15.3s (1512 modules)
- GET / 200 in 16578ms
+ ✓ Compiled / in 9s (1503 modules)
+ GET / 200 in 10873ms
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ✓ Compiled in 667ms (738 modules)
+ ✓ Compiled in 273ms (738 modules)
  ○ Compiling /club/register ...
- ✓ Compiled /club/register in 1301ms (1520 modules)
- GET / 200 in 285ms
- GET /club/register 200 in 1643ms
- ✓ Compiled /connect in 415ms (1519 modules)
- GET /connect 200 in 586ms
- GET /club/register 200 in 46ms
- ○ Compiling /api/register ...
- ✓ Compiled /api/register in 597ms (1539 modules)
-Registration error: Error [PrismaClientInitializationError]:
-Invalid `prisma.customer.findUnique()` invocation:
-
-
-Can't reach database server at `localhost:5432`
-
-Please make sure your database server is running at `localhost:5432`.
-    at async POST (src/app/api/register/route.ts:13:21)
-  11 |
-  12 |     // Check if customer already exists
-> 13 |     const existing = await prisma.customer.findUnique({
-     |                     ^
-  14 |       where: { phone }
-  15 |     })
-  16 | {
-  clientVersion: '6.2.1',
-  errorCode: undefined
-}
- POST /api/register 500 in 1686ms
- GET / 200 in 294ms
+ ✓ Compiled /club/register in 1428ms (1530 modules)
+ GET /club/register 200 in 1531ms
+ ✓ Compiled in 284ms (757 modules)
+ ✓ Compiled in 186ms (757 modules)
+ ✓ Compiled in 299ms (757 modules)
+ ✓ Compiled in 265ms (757 modules)
+ ✓ Compiled in 189ms (743 modules)
+ ✓ Compiled in 229ms (757 modules)
+ GET / 200 in 87ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
+ GET /club/register 200 in 36ms
+ ✓ Compiled in 186ms (757 modules)
+ ✓ Compiled in 427ms (757 modules)
+ ✓ Compiled in 221ms (757 modules)
+ ✓ Compiled in 103ms (743 modules)
+ ✓ Compiled in 277ms (757 modules)
+ GET / 200 in 105ms
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
  ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- GET /club/register 200 in 48ms
- GET /connect 200 in 42ms
- GET /club/register 200 in 243ms
- ✓ Compiled in 9s (1534 modules)
- ✓ Compiled in 1017ms (1534 modules)
- ✓ Compiled in 545ms (751 modules)
- ✓ Compiled in 2.3s (1534 modules)
- ✓ Compiled in 435ms (751 modules)
- ✓ Compiled in 806ms (751 modules)
- ✓ Compiled in 435ms (751 modules)
- ✓ Compiled in 2.9s (1534 modules)
- ✓ Compiled in 682ms (1534 modules)
- ✓ Compiled in 2.7s (1534 modules)
- GET / 200 in 736ms
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- GET /club/register 200 in 77ms
- ○ Compiling /src/middleware ...
- ✓ Compiled /src/middleware in 1373ms (98 modules)
- ○ Compiling /login ...
- ✓ Compiled /login in 3.3s (1531 modules)
- GET /login?from=%2Fseller 200 in 3602ms
- ✓ Compiled in 1245ms (1545 modules)
- GET / 200 in 312ms
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- GET /club/register 200 in 62ms
- GET /login?from=%2Fseller 200 in 57ms
- ○ Compiling /api/auth/login ...
- ✓ Compiled /api/auth/login in 1236ms (1554 modules)
- POST /api/auth/login 200 in 1373ms
- ○ Compiling /seller ...
- ✓ Compiled /seller in 731ms (1573 modules)
- GET /seller 200 in 935ms
- GET /seller 200 in 30ms
- ✓ Compiled in 749ms (1587 modules)
- GET / 200 in 302ms
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- ⨯ upstream image response failed for https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop 404
- GET /club/register 200 in 78ms
- GET /login?from=%2Fseller 200 in 47ms
- POST /api/auth/login 200 in 26ms
- GET /seller 200 in 20ms
- GET /seller 200 in 23ms
- GET /login?from=%2Fadmin 200 in 31ms
- POST /api/auth/login 200 in 20ms
- ○ Compiling /admin ...
- ✓ Compiled /admin in 2.5s (1584 modules)
- GET /admin 200 in 2683ms
- GET /admin 200 in 23ms
- ✓ Compiled /api/admin/customers in 493ms (1588 modules)
+ GET /club/register 200 in 52ms
+ ✓ Compiled in 215ms (757 modules)
