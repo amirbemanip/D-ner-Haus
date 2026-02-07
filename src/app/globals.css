@@ -68,3 +68,31 @@ body {
   -webkit-text-stroke: 1px rgba(242, 242, 242, 0.2);
   color: transparent;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-card, .print-card * {
+    visibility: visible;
+  }
+  .print-card {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 85mm !important;
+    height: 55mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #0F0F0F !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
