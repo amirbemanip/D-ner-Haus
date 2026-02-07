@@ -49,9 +49,9 @@ export default function SellerPage() {
       if (!res.ok) throw new Error(data.error);
       setCustomer(data);
 
-      if (action === 'add_purchase') setMessage('Purchase added successfully!');
-      if (action === 'redeem_doner') setMessage('Free Döner redeemed!');
-      if (action === 'redeem_fries') setMessage('Free Fries redeemed!');
+      if (action === 'add_purchase') setMessage('Kauf erfolgreich hinzugefügt!');
+      if (action === 'redeem_doner') setMessage('Gratis Döner eingelöst!');
+      if (action === 'redeem_fries') setMessage('Gratis Pommes eingelöst!');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -65,10 +65,10 @@ export default function SellerPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-brand-white/5 pb-12">
           <div className="space-y-4">
             <Badge variant="primary">POS Terminal v1.2</Badge>
-            <h1 className="text-6xl font-black uppercase tracking-tighter leading-none">Checkout <br/> <span className="text-brand-orange">Control</span></h1>
+            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none">Kassen <br/> <span className="text-brand-orange">Kontrolle</span></h1>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20">Authorized Terminal</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20">Autorisiertes Terminal</p>
             <p className="text-lg font-bold">Nürnberg Center #01</p>
           </div>
         </div>
@@ -78,14 +78,14 @@ export default function SellerPage() {
             <div className="relative flex-1">
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-white/20 w-6 h-6" />
               <input
-                placeholder="6-Digit Code or Phone"
+                placeholder="Code / Telefon"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                className="w-full h-20 bg-brand-black border border-brand-white/5 rounded-2xl pl-16 pr-6 text-2xl font-black tracking-widest placeholder:tracking-normal placeholder:font-medium outline-none focus:border-brand-orange/50 transition-all"
+                className="w-full h-20 bg-brand-black border border-brand-white/5 rounded-2xl pl-16 pr-6 text-xl md:text-2xl font-black tracking-widest placeholder:tracking-normal placeholder:font-medium outline-none focus:border-brand-orange/50 transition-all"
               />
             </div>
             <Button type="submit" size="xl" disabled={loading} className="md:w-64 h-20">
-              {loading ? <RefreshCw className="animate-spin" /> : 'Search Member'}
+              {loading ? <RefreshCw className="animate-spin" /> : 'Mitglied suchen'}
             </Button>
           </form>
         </Card>
@@ -137,11 +137,11 @@ export default function SellerPage() {
 
                     <div className="grid grid-cols-2 gap-8">
                       <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Total Stamps</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Gesamtstempel</p>
                         <p className="text-6xl font-black">{customer.coupons}</p>
                       </div>
                       <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Next Reward</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Nächste Belohnung</p>
                         <p className="text-6xl font-black text-brand-orange">{10 - (customer.coupons % 10)}</p>
                       </div>
                     </div>
@@ -156,12 +156,12 @@ export default function SellerPage() {
                           <div className="flex items-center gap-4 text-brand-black">
                             <Gift className="w-8 h-8" />
                             <div>
-                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Welcome Reward</p>
-                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Free Signature Fries</p>
+                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Willkommens-Belohnung</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Gratis Signature Pommes</p>
                             </div>
                           </div>
                           <Button variant="secondary" size="sm" onClick={() => handleAction('redeem_fries')} disabled={loading}>
-                            Redeem
+                            Einlösen
                           </Button>
                         </motion.div>
                       )}
@@ -175,12 +175,12 @@ export default function SellerPage() {
                           <div className="flex items-center gap-4 text-brand-black">
                             <Ticket className="w-8 h-8" />
                             <div>
-                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Loyalty Free Döner</p>
-                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">{Math.floor(customer.coupons / 10)} Available</p>
+                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Gratis Döner</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">{Math.floor(customer.coupons / 10)} Verfügbar</p>
                             </div>
                           </div>
                           <Button variant="secondary" size="sm" className="bg-brand-black text-green-500" onClick={() => handleAction('redeem_doner')} disabled={loading}>
-                            Redeem
+                            Einlösen
                           </Button>
                         </motion.div>
                       )}
@@ -188,7 +188,7 @@ export default function SellerPage() {
                   </div>
 
                   <div className="lg:col-span-5 flex flex-col gap-6">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20 mb-2">Terminal Actions</h3>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20 mb-2">Terminal-Aktionen</h3>
 
                     <Button
                       variant="primary"
@@ -196,7 +196,7 @@ export default function SellerPage() {
                       onClick={() => handleAction('add_purchase')}
                       disabled={loading}
                     >
-                      <Plus className="mr-4 w-8 h-8 stroke-[3]" /> Add Stamp
+                      <Plus className="mr-4 w-8 h-8 stroke-[3]" /> Stempel hinzufügen
                     </Button>
 
                     <Button
@@ -204,7 +204,7 @@ export default function SellerPage() {
                       className="h-20 rounded-2xl opacity-50 hover:opacity-100"
                       onClick={() => {setCustomer(null); setCode('');}}
                     >
-                      <X className="mr-3 w-5 h-5" /> End Session
+                      <X className="mr-3 w-5 h-5" /> Sitzung beenden
                     </Button>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ export default function SellerPage() {
               className="py-40 flex flex-col items-center justify-center text-center space-y-8 opacity-10"
             >
               <Ticket className="w-32 h-32 stroke-[1]" />
-              <p className="text-2xl font-black uppercase tracking-[0.5em]">Scan Member to Begin</p>
+              <p className="text-2xl font-black uppercase tracking-[0.5em]">Mitglied scannen zum Starten</p>
             </motion.div>
           )}
         </AnimatePresence>

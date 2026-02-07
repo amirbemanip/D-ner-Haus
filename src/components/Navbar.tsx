@@ -25,14 +25,14 @@ export const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-brand-white/60">
-          <Link href="/" className="hover:text-brand-orange transition-colors">Home</Link>
-          <Link href="#menu" className="hover:text-brand-orange transition-colors">Menu</Link>
-          <Link href="#about" className="hover:text-brand-orange transition-colors">About</Link>
-          <Link href="/seller" className="hover:text-brand-orange transition-colors">Seller POS</Link>
+          <Link href="/" className="hover:text-brand-orange transition-colors">Startseite</Link>
+          <Link href="#menu" className="hover:text-brand-orange transition-colors">Menü</Link>
+          <Link href="#about" className="hover:text-brand-orange transition-colors">Über uns</Link>
+          <Link href="/seller" className="hover:text-brand-orange transition-colors">Verkäufer-Kasse</Link>
         </div>
 
         <Link href="/club/register">
-          <Button size="sm">Join the Club</Button>
+          <Button size="sm">Tritt dem Club bei</Button>
         </Link>
       </div>
     </nav>

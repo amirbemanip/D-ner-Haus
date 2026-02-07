@@ -27,7 +27,7 @@ export const Footer = () => {
               </div>
             </Link>
             <p className="text-brand-white/40 text-lg font-medium leading-relaxed max-w-sm">
-              The benchmark for premium street food in Nürnberg. Crafting the perfect döner experience since 2024.
+              Der Maßstab für Premium-Street-Food in Nürnberg. Perfektes Döner-Erlebnis seit 2024.
             </p>
             <div className="flex gap-6">
               {[Instagram, Facebook, Twitter].map((Icon, i) => (
@@ -39,26 +39,26 @@ export const Footer = () => {
           </div>
 
           <div className="md:col-span-2 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Navigate</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Navigation</h4>
             <ul className="space-y-4 text-sm font-bold uppercase tracking-widest text-brand-white/60">
-              <li><Link href="/" className="hover:text-brand-white transition-colors">Home</Link></li>
-              <li><Link href="#menu" className="hover:text-brand-white transition-colors">Menu</Link></li>
-              <li><Link href="#about" className="hover:text-brand-white transition-colors">About Us</Link></li>
+              <li><Link href="/" className="hover:text-brand-white transition-colors">Startseite</Link></li>
+              <li><Link href="#menu" className="hover:text-brand-white transition-colors">Menü</Link></li>
+              <li><Link href="#about" className="hover:text-brand-white transition-colors">Über uns</Link></li>
               <li><Link href="/club/register" className="hover:text-brand-white transition-colors">Club</Link></li>
             </ul>
           </div>
 
           <div className="md:col-span-2 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Legal</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Rechtliches</h4>
             <ul className="space-y-4 text-sm font-bold uppercase tracking-widest text-brand-white/60">
-              <li><Link href="#" className="hover:text-brand-white transition-colors">Privacy Policy</Link></li>
+              <li><Link href="#" className="hover:text-brand-white transition-colors">Datenschutz</Link></li>
               <li><Link href="#" className="hover:text-brand-white transition-colors">Impressum</Link></li>
-              <li><Link href="#" className="hover:text-brand-white transition-colors">Terms of Use</Link></li>
+              <li><Link href="#" className="hover:text-brand-white transition-colors">Nutzungsbedingungen</Link></li>
             </ul>
           </div>
 
           <div className="md:col-span-3 space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Location</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange">Standort</h4>
             <div className="space-y-4">
               <Link
                 href="https://maps.app.goo.gl/WDt9y5Q3akE63pgR6"
@@ -67,19 +67,19 @@ export const Footer = () => {
               >
                 Königstraße 12 <br/>
                 90402 Nürnberg <br/>
-                Germany
+                Deutschland
               </Link>
-              <Badge variant="outline">Open daily until 22:00</Badge>
+              <Badge variant="outline">Täglich bis 22:00 Uhr geöffnet</Badge>
             </div>
           </div>
         </div>
 
         <div className="pt-16 border-t border-brand-white/5 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/10">
-          <p>© 2026 Dönerhaus Nürnberg. All Rights Reserved.</p>
+          <p>© 2026 Dönerhaus Nürnberg. Alle Rechte vorbehalten.</p>
           <div className="flex gap-12">
-            <span>Built by Jules</span>
-            <Link href="/admin" className="hover:text-brand-orange transition-colors">Admin Portal</Link>
-            <Link href="/seller" className="hover:text-brand-orange transition-colors">Seller POS</Link>
+            <span>Erstellt von Jules</span>
+            <Link href="/admin" className="hover:text-brand-orange transition-colors">Admin-Portal</Link>
+            <Link href="/seller" className="hover:text-brand-orange transition-colors">Verkäufer-Kasse</Link>
           </div>
         </div>
       </div>

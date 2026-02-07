@@ -45,7 +45,7 @@ export default function ConnectPage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-base md:text-lg font-bold text-white mb-1 leading-tight">Döner Elite Club</h2>
-                <p className="text-white/40 text-[10px] md:text-xs">Join for rewards & free Döner</p>
+                <p className="text-white/40 text-[10px] md:text-xs">Sammle Belohnungen & gratis Döner</p>
               </div>
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
             </motion.div>
@@ -67,7 +67,7 @@ export default function ConnectPage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-base md:text-lg font-bold text-white mb-1 uppercase tracking-tight leading-tight">Feedback</h2>
-                <p className="text-white/40 text-[10px] md:text-xs italic">Share your experience! ⭐</p>
+                <p className="text-white/40 text-[10px] md:text-xs italic">Teile deine Erfahrung! ⭐</p>
               </div>
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[#E67E22] transition-colors" />
             </motion.div>
@@ -76,7 +76,7 @@ export default function ConnectPage() {
 
         {/* Footer info */}
         <div className="mt-16 text-center space-y-4">
-          <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">Follow the fire</p>
+          <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.4em]">Folge dem Feuer</p>
           <div className="flex gap-4 justify-center">
              <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-[#E67E22] hover:border-[#E67E22] transition-all cursor-pointer">
                 <span className="text-xs font-bold">IG</span>

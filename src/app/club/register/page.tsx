@@ -70,22 +70,22 @@ export default function RegisterPage() {
             >
               <Card className="p-6 md:p-16" animate={false}>
                 <div className="text-center space-y-6 mb-12">
-                  <Badge variant="primary">Prestige Membership</Badge>
+                  <Badge variant="primary">Prestige-Mitgliedschaft</Badge>
                   <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
-                    Join the <br/> <span className="text-brand-orange">Döner Elite</span>
+                    Werde Teil der <br/> <span className="text-brand-orange">Döner-Elite</span>
                   </h1>
                   <p className="text-brand-white/40 text-sm font-medium max-w-sm mx-auto">
-                    Unlock exclusive culinary privileges and track your journey to free rewards.
+                    Schalte exklusive kulinarische Privilegien frei und verfolge deinen Weg zu kostenlosen Belohnungen.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Full Name</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Vollständiger Name</label>
                       <input
                         type="text"
-                        placeholder="E.g. Max Mustermann"
+                        placeholder="z.B. Max Mustermann"
                         required
                         className="w-full h-16 bg-brand-black border border-brand-white/10 rounded-2xl px-6 font-bold focus:border-brand-orange outline-none transition-all placeholder:text-brand-white/10"
                         value={formData.name}
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Mobile Number</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Mobilnummer</label>
                       <input
                         type="tel"
                         placeholder="+49 123 4567890"
@@ -116,7 +116,7 @@ export default function RegisterPage() {
                   )}
 
                   <Button type="submit" size="xl" className="w-full" disabled={loading}>
-                    {loading ? 'Processing...' : 'Register Now'}
+                    {loading ? 'Verarbeitung...' : 'Jetzt registrieren'}
                   </Button>
                 </form>
 
@@ -126,8 +126,8 @@ export default function RegisterPage() {
                       <Ticket className="w-5 h-5 text-brand-orange" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Loyalty</p>
-                      <p className="text-xs font-bold text-brand-white/50 leading-tight">10th Döner is on the house.</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Loyalität</p>
+                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Der 10. Döner geht auf uns.</p>
                     </div>
                   </div>
                   <div className="space-y-4">
@@ -135,8 +135,8 @@ export default function RegisterPage() {
                       <Gift className="w-5 h-5 text-brand-orange" />
                     </div>
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Welcome</p>
-                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Free Fries on your 1st order.</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Willkommen</p>
+                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Kostenlose Pommes bei der 1. Bestellung.</p>
                     </div>
                   </div>
                 </div>
@@ -162,14 +162,14 @@ export default function RegisterPage() {
                     <div className="w-24 h-24 glass-orange rounded-full flex items-center justify-center mx-auto mb-4 border-brand-orange/30">
                       <Sparkles className="w-10 h-10 text-brand-orange" />
                     </div>
-                    <Badge variant="primary">Welcome to the Club</Badge>
+                    <Badge variant="primary">Willkommen im Club</Badge>
                     <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none">
-                      Privilege <br/> <span className="text-brand-orange">Activated.</span>
+                      Privileg <br/> <span className="text-brand-orange">aktiviert.</span>
                     </h2>
                   </div>
 
                   <div className="space-y-6">
-                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/30">Your Personal Membership Code</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/30">Dein persönlicher Mitgliedschaftscode</p>
                     <div className="bg-brand-black/80 border border-brand-white/5 rounded-[40px] p-6 md:p-12 relative group/code overflow-hidden">
                       <div className="absolute inset-0 bg-brand-orange opacity-0 group-hover/code:opacity-[0.02] transition-opacity" />
                       <p className="text-5xl md:text-[100px] font-black tracking-[0.1em] text-brand-white select-all">{membershipCode}</p>
@@ -181,11 +181,11 @@ export default function RegisterPage() {
                     >
                       {copied ? (
                         <>
-                          <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Copied</span>
+                          <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Kopiert</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Copy to Clipboard</span>
+                          <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">In Zwischenablage kopieren</span>
                         </>
                       )}
                     </button>
@@ -193,17 +193,17 @@ export default function RegisterPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-brand-white/5">
                     <Button variant="outline" size="lg" className="h-16" onClick={() => window.print()}>
-                      Save Voucher
+                      Gutschein speichern
                     </Button>
                     <Link href="/">
                       <Button variant="secondary" size="lg" className="w-full h-16">
-                        Return Home
+                        Zurück zur Startseite
                       </Button>
                     </Link>
                   </div>
 
                   <p className="text-[10px] font-bold text-brand-white/20 uppercase tracking-widest italic">
-                    *Show this code at the counter to redeem your rewards.
+                    *Zeige diesen Code an der Kasse vor, um deine Belohnungen einzulösen.
                   </p>
                 </div>
               </Card>
