@@ -47,25 +47,34 @@ export default function SellerPage() {
   }, []);
 
   useEffect(() => {
-    if (isScanning) {
-      scannerRef.current = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        /* verbose= */ false
-      );
-      scannerRef.current.render(onScanSuccess, onScanFailure);
-    } else {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(error => console.error("Failed to clear scanner", error));
-        scannerRef.current = null;
-      }
-    }
+    let scanner: Html5QrcodeScanner | null = null;
 
-    return () => {
-      if (scannerRef.current) {
-        scannerRef.current.clear().catch(error => console.error("Failed to clear scanner", error));
-      }
-    };
+    if (isScanning) {
+      // Create scanner instance
+      scanner = new Html5QrcodeScanner(
+        "reader",
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+          aspectRatio: 1.0
+        },
+        false
+      );
+
+      // Use a small delay to ensure the DOM element #reader is ready
+      const timer = setTimeout(() => {
+        if (scanner) {
+          scanner.render(onScanSuccess, onScanFailure);
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+        if (scanner) {
+          scanner.clear().catch(error => console.error("Failed to clear scanner", error));
+        }
+      };
+    }
   }, [isScanning, onScanSuccess, onScanFailure]);
 
   const handleSearch = async (e?: React.FormEvent) => {
