@@ -1,98 +1,176 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-black: #0F0F0F;
-  --color-brand-charcoal: #141414;
-  --color-brand-orange: #E67E22;
-  --color-brand-orange-light: #FF8C1A;
-  --color-brand-gray: #2A2A2A;
-  --color-brand-gray-light: #3A3A3A;
-  --color-brand-white: #F2F2F2;
+  --color-gold: #FF6B00;
+  --color-gold-light: #FF9E4D;
+  --color-gold-dark: #CC5500;
+  --color-gold-dim: rgba(255, 107, 0, 0.1);
 
-  --radius-brand-xl: 16px;
-  --radius-brand-lg: 12px;
-  --radius-brand-md: 8px;
-  --radius-brand-pill: 9999px;
+  --color-obsidian-base: #030303;
+  --color-obsidian-surface: #0A0A0A;
+  --color-obsidian-card: #121212;
+  --color-obsidian-border: #222222;
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-syncopate), ui-sans-serif, system-ui, sans-serif;
 
-:root {
-  --background: #0F0F0F;
-  --foreground: #F2F2F2;
-}
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
 
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-}
-
-/* Custom scrollbar for premium feel */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0F0F0F;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #2A2A2A;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #E67E22;
-}
-
-/* Glassmorphism utility - Optimized for Safari performance */
-.glass {
-  background: rgba(20, 20, 20, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glass-orange {
-  background: rgba(230, 126, 34, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(230, 126, 34, 0.2);
-}
-
-/* Premium Typography */
-.text-outline {
-  -webkit-text-stroke: 1px rgba(242, 242, 242, 0.2);
-  color: transparent;
-}
-
-@media print {
-  body * {
-    visibility: hidden;
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
   }
-  .print-card, .print-card * {
-    visibility: visible;
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.2; transform: translate(-50%, -50%) scale(1.1); }
   }
-  .print-card {
-    position: fixed !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 85mm !important;
-    height: 55mm !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #0F0F0F !important;
-    color: white !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-    box-shadow: none !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
+}
+
+/* Base resets */
+@layer base {
+  body {
+    @apply bg-obsidian-base text-white antialiased cursor-none;
+    overflow-x: hidden;
   }
-  .no-print {
-    display: none !important;
+
+  * {
+    cursor: none !important;
   }
+}
+
+@layer utilities {
+  .text-outline {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    color: transparent;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 30px rgba(255, 107, 0, 0.6);
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .perspective-1000 {
+    perspective: 1500px;
+  }
+
+  .scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .bg-noise {
+    background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+  }
+}
+
+/* Card Flip Logic */
+.flip-card {
+  perspective: 1500px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-bg-front {
+  background: #0a0a0a;
+  background-image: radial-gradient(circle at 100% 0%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.card-bg-back {
+  background: linear-gradient(135deg, #FF6B00 0%, #aa4400 100%);
+  transform: rotateY(180deg);
+  color: black;
+  box-shadow: 0 20px 50px rgba(255, 107, 0, 0.3);
+}
+
+/* Lenis smooth scroll */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Magnetic Button Base */
+.btn-magnetic {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1;
+}
+
+.btn-magnetic::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #FF6B00;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: -1;
+}
+
+.btn-magnetic:hover::after {
+  transform: translateY(0);
+}
+
+.btn-magnetic:hover {
+  border-color: transparent !important;
+}
+
+/* Forcing cursor none globally */
+.cursor-hover {
+  cursor: none !important;
 }

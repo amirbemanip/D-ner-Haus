@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
+import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X, Fingerprint, Lock } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 export default function SellerPage() {
   const [code, setCode] = useState('');
@@ -49,9 +49,9 @@ export default function SellerPage() {
       if (!res.ok) throw new Error(data.error);
       setCustomer(data);
 
-      if (action === 'add_purchase') setMessage('Kauf erfolgreich hinzugefügt!');
-      if (action === 'redeem_doner') setMessage('Gratis Döner eingelöst!');
-      if (action === 'redeem_fries') setMessage('Gratis Pommes eingelöst!');
+      if (action === 'add_purchase') setMessage('STAMP ADDED');
+      if (action === 'redeem_doner') setMessage('REWARD REDEEMED');
+      if (action === 'redeem_fries') setMessage('GIFT REDEEMED');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -60,167 +60,139 @@ export default function SellerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-black pt-32 pb-20 px-6">
-      <div className="max-w-5xl mx-auto space-y-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-brand-white/5 pb-12">
-          <div className="space-y-4">
-            <Badge variant="primary">POS Terminal v1.2</Badge>
-            <h1 className="text-5xl md:text-6xl font-black uppercase tracking-tighter leading-none">Kassen <br/> <span className="text-brand-orange">Kontrolle</span></h1>
+    <div className="min-h-screen bg-obsidian-base pt-32 pb-20 px-6 font-sans">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-12 flex justify-between items-end border-b border-white/5 pb-8">
+          <div>
+            <div className="text-[10px] text-gray-500 uppercase tracking-[0.4em] mb-2">Terminal 01 / Online</div>
+            <h1 className="text-4xl font-display font-bold text-white tracking-tighter uppercase">Member <span className="text-gold">Lookup</span></h1>
           </div>
-          <div className="text-right hidden md:block">
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20">Autorisiertes Terminal</p>
-            <p className="text-lg font-bold">Nürnberg Center #01</p>
-          </div>
+          <button onClick={() => window.location.href = '/login'} className="text-[10px] text-gray-600 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-2">
+            <Lock className="w-3 h-3" /> Secure Logout
+          </button>
         </div>
 
-        <Card className="p-8 bg-brand-charcoal/50" animate={false}>
-          <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-white/20 w-6 h-6" />
-              <input
-                placeholder="Code / Telefon"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="w-full h-20 bg-brand-black border border-brand-white/5 rounded-2xl pl-16 pr-6 text-xl md:text-2xl font-black tracking-widest placeholder:tracking-normal placeholder:font-medium outline-none focus:border-brand-orange/50 transition-all"
-              />
-            </div>
-            <Button type="submit" size="xl" disabled={loading} className="md:w-64 h-20">
-              {loading ? <RefreshCw className="animate-spin" /> : 'Mitglied suchen'}
-            </Button>
-          </form>
-        </Card>
-
-        <AnimatePresence mode="wait">
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="text-red-500 font-bold bg-red-500/5 p-8 rounded-2xl border border-red-500/20 text-center"
-            >
-              Error: {error}
-            </motion.div>
-          )}
-
-          {message && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="text-green-500 font-bold bg-green-500/5 p-8 rounded-2xl border border-green-500/20 flex items-center justify-center gap-4"
-            >
-              <Check className="w-6 h-6" />
-              {message}
-            </motion.div>
-          )}
-
-          {customer ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <Card className="p-12 md:p-16 border-brand-orange/20" animate={false}>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                  <div className="lg:col-span-7 space-y-12">
-                    <div className="flex items-center gap-8">
-                      <div className="w-24 h-24 glass-orange rounded-3xl flex items-center justify-center border-brand-orange/30 rotate-3">
-                        <User className="w-12 h-12 text-brand-orange -rotate-3" />
-                      </div>
-                      <div className="space-y-2">
-                        <h2 className="text-5xl font-black uppercase tracking-tighter leading-none">{customer.name}</h2>
-                        <p className="text-brand-orange font-mono text-lg tracking-[0.2em]">{customer.membershipCode}</p>
-                        <Badge variant="outline">{customer.phone}</Badge>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-8">
-                      <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Gesamtstempel</p>
-                        <p className="text-6xl font-black">{customer.coupons}</p>
-                      </div>
-                      <div className="glass p-8 rounded-3xl border-brand-white/5 space-y-2">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/20">Nächste Belohnung</p>
-                        <p className="text-6xl font-black text-brand-orange">{10 - (customer.coupons % 10)}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      {!customer.receivedFirstGift && (
-                        <motion.div
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          className="bg-brand-orange p-8 rounded-3xl flex items-center justify-between shadow-[0_20px_50px_rgba(230,126,34,0.2)]"
-                        >
-                          <div className="flex items-center gap-4 text-brand-black">
-                            <Gift className="w-8 h-8" />
-                            <div>
-                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Willkommens-Belohnung</p>
-                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">Gratis Signature Pommes</p>
-                            </div>
-                          </div>
-                          <Button variant="secondary" size="sm" onClick={() => handleAction('redeem_fries')} disabled={loading}>
-                            Einlösen
-                          </Button>
-                        </motion.div>
-                      )}
-
-                      {customer.coupons >= 10 && (
-                        <motion.div
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          className="bg-green-500 p-8 rounded-3xl flex items-center justify-between shadow-[0_20px_50px_rgba(34,197,94,0.2)]"
-                        >
-                          <div className="flex items-center gap-4 text-brand-black">
-                            <Ticket className="w-8 h-8" />
-                            <div>
-                              <p className="font-black uppercase tracking-tighter text-xl leading-none">Gratis Döner</p>
-                              <p className="text-[10px] font-bold uppercase tracking-widest opacity-60">{Math.floor(customer.coupons / 10)} Verfügbar</p>
-                            </div>
-                          </div>
-                          <Button variant="secondary" size="sm" className="bg-brand-black text-green-500" onClick={() => handleAction('redeem_doner')} disabled={loading}>
-                            Einlösen
-                          </Button>
-                        </motion.div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-5 flex flex-col gap-6">
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-white/20 mb-2">Terminal-Aktionen</h3>
-
-                    <Button
-                      variant="primary"
-                      className="h-32 text-3xl font-black rounded-[32px]"
-                      onClick={() => handleAction('add_purchase')}
-                      disabled={loading}
-                    >
-                      <Plus className="mr-4 w-8 h-8 stroke-[3]" /> Stempel hinzufügen
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      className="h-20 rounded-2xl opacity-50 hover:opacity-100"
-                      onClick={() => {setCustomer(null); setCode('');}}
-                    >
-                      <X className="mr-3 w-5 h-5" /> Sitzung beenden
-                    </Button>
-                  </div>
+        <div className="grid lg:grid-cols-12 gap-8">
+          {/* Sidebar / Search */}
+          <div className="lg:col-span-4 space-y-6">
+            <Card className="p-8">
+              <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Database Query</h3>
+              <form onSubmit={handleSearch} className="space-y-4">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
+                  <Input
+                    placeholder="CODE / PHONE"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    className="pl-12"
+                  />
                 </div>
-              </Card>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="py-40 flex flex-col items-center justify-center text-center space-y-8 opacity-10"
-            >
-              <Ticket className="w-32 h-32 stroke-[1]" />
-              <p className="text-2xl font-black uppercase tracking-[0.5em]">Mitglied scannen zum Starten</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <Button type="submit" disabled={loading} variant="outline" size="md" className="w-full">
+                  {loading ? 'SEARCHING...' : 'SEARCH DATABASE'}
+                </Button>
+              </form>
+            </Card>
+
+            <Card className="p-6">
+              <div className="text-[9px] text-gray-600 font-mono space-y-1">
+                <p>STATUS: OPERATIONAL</p>
+                <p>LATENCY: 14MS</p>
+                <p>ENCRYPTION: AES-256</p>
+              </div>
+            </Card>
+          </div>
+
+          {/* Main Display */}
+          <div className="lg:col-span-8 relative">
+            <Card className="p-10 min-h-[500px] flex flex-col">
+              <AnimatePresence mode="wait">
+                {customer ? (
+                  <motion.div
+                    key="result"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="flex flex-col h-full"
+                  >
+                    <div className="flex justify-between items-start border-b border-white/5 pb-8 mb-8">
+                      <div>
+                        <div className="text-[10px] text-gold uppercase tracking-widest mb-2">Customer Profile</div>
+                        <h2 className="text-4xl font-display font-bold text-white uppercase">{customer.name}</h2>
+                        <p className="text-sm font-mono text-gray-500 mt-1 uppercase tracking-widest">{customer.phone}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-2">Membership Code</div>
+                        <div className="bg-white/5 px-4 py-2 rounded border border-white/10 font-mono text-xl text-gold">{customer.membershipCode}</div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8 mb-12">
+                      <div>
+                        <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">Loyalty Progress</div>
+                        <div className="flex items-end gap-2 mb-4">
+                          <span className="text-6xl font-display font-bold text-white leading-none">{customer.coupons}</span>
+                          <span className="text-xl text-gray-600 mb-1 font-mono">/ 10</span>
+                        </div>
+                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(customer.coupons % 10) * 10}%` }}
+                            className="h-full bg-gold shadow-[0_0_15px_rgba(255,107,0,0.5)]"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col justify-center gap-4">
+                        {!customer.receivedFirstGift && (
+                          <div className="bg-gold/10 border border-gold/30 p-4 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Gift className="w-4 h-4 text-gold" />
+                              <span className="text-[10px] font-bold text-white uppercase tracking-widest">Welcome Gift</span>
+                            </div>
+                            <button onClick={() => handleAction('redeem_fries')} className="px-4 py-2 bg-gold text-black text-[9px] font-bold uppercase rounded hover:bg-white transition-colors">Redeem</button>
+                          </div>
+                        )}
+                        {customer.coupons >= 10 && (
+                          <div className="bg-green-500/10 border border-green-500/30 p-4 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <Ticket className="w-4 h-4 text-green-500" />
+                              <span className="text-[10px] font-bold text-white uppercase tracking-widest">Free Döner</span>
+                            </div>
+                            <button onClick={() => handleAction('redeem_doner')} className="px-4 py-2 bg-green-500 text-black text-[9px] font-bold uppercase rounded hover:bg-white transition-colors">Redeem</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-auto grid grid-cols-2 gap-4">
+                      <Button onClick={() => handleAction('add_purchase')} variant="primary" size="lg" className="w-full h-20">
+                        <Plus className="w-5 h-5" /> Add Stamp
+                      </Button>
+                      <Button onClick={() => {setCustomer(null); setCode('');}} variant="outline" size="lg" className="w-full h-20">
+                        Clear Session
+                      </Button>
+                    </div>
+
+                    {message && (
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 p-4 bg-green-500/10 border border-green-500/20 text-green-500 text-center text-[10px] font-bold uppercase tracking-[0.3em]">
+                        {message}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.3 }}
+                    className="flex-1 flex flex-col items-center justify-center text-center space-y-6"
+                  >
+                    <User className="w-24 h-24 stroke-[1]" />
+                    <p className="text-xl font-display uppercase tracking-[0.5em]">Waiting for Input</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
