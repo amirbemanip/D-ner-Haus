@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Ticket, Gift, TrendingUp, Search, RefreshCw, Lock, ShieldCheck } from 'lucide-react';
+import { Users, Ticket, Gift, TrendingUp, Search, RefreshCw, Lock, ShieldCheck, Star } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
