@@ -5,7 +5,7 @@ import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X, Fingerprint, Loc
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode } from 'html5-qrcode';
 
 export default function SellerPage() {
   const [code, setCode] = useState('');
@@ -14,7 +14,7 @@ export default function SellerPage() {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [isScanning, setIsScanning] = useState(false);
-  const scannerRef = useRef<Html5QrcodeScanner | null>(null);
+  const qrCodeRef = useRef<Html5Qrcode | null>(null);
 
   const handleSearchWithCode = React.useCallback(async (searchCode: string) => {
     if (!searchCode) return;
@@ -47,35 +47,41 @@ export default function SellerPage() {
   }, []);
 
   useEffect(() => {
-    let scanner: Html5QrcodeScanner | null = null;
-
     if (isScanning) {
-      // Create scanner instance
-      scanner = new Html5QrcodeScanner(
-        "reader",
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0
-        },
-        false
-      );
+      const html5QrCode = new Html5Qrcode("reader");
+      qrCodeRef.current = html5QrCode;
 
-      // Use a small delay to ensure the DOM element #reader is ready
-      const timer = setTimeout(() => {
-        if (scanner) {
-          scanner.render(onScanSuccess, onScanFailure);
+      const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        aspectRatio: 1.0
+      };
+
+      // Start the camera automatically
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        (decodedText) => {
+          onScanSuccess(decodedText);
+        },
+        (errorMessage) => {
+          // ignore failures
         }
-      }, 100);
+      ).catch(err => {
+        console.error("Unable to start scanning", err);
+        setError("Kamera konnte nicht gestartet werden. Bitte Berechtigung prüfen.");
+        setIsScanning(false);
+      });
 
       return () => {
-        clearTimeout(timer);
-        if (scanner) {
-          scanner.clear().catch(error => console.error("Failed to clear scanner", error));
+        if (qrCodeRef.current && qrCodeRef.current.isScanning) {
+          qrCodeRef.current.stop().then(() => {
+            qrCodeRef.current?.clear();
+          }).catch(err => console.error("Failed to stop scanner", err));
         }
       };
     }
-  }, [isScanning, onScanSuccess, onScanFailure]);
+  }, [isScanning, onScanSuccess]);
 
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
