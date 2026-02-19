@@ -87,8 +87,8 @@ export default function Home() {
 
           <div className="relative inline-block w-full">
             {/* Background Hero Logo */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none hero-reveal opacity-0 select-none">
-              <div className="relative w-full aspect-[2/1] max-w-4xl opacity-[0.03] grayscale contrast-125 blur-[2px] transform scale-125">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none hero-reveal opacity-0 select-none overflow-hidden">
+              <div className="relative w-full max-w-5xl aspect-square opacity-10 grayscale contrast-125 blur-[1px] transform scale-110">
                 <Image
                   src="/logo.jpg"
                   alt=""

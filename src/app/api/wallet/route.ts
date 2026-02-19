@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       body: JSON.stringify({
         barcodeValue: code,
         barcodeFormat: 'QR',
-        title: 'Dönerhaus Elite',
+        title: name || 'Dönerhaus Elite',
         colorPreset: 'dark',
         label1: 'Member',
         value1: name || 'Elite Guest',
