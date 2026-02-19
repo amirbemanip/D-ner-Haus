@@ -15,10 +15,26 @@ export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({ name: '', phone: '' });
+  const [lookupData, setLookupData] = useState({ name: '', code: '' });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [lookupLoading, setLookupLoading] = useState(false);
   const [error, setError] = useState('');
+  const [lookupError, setLookupError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [broadcasts, setBroadcasts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchBroadcasts = async () => {
+      try {
+        const query = user ? `?phone=${user.phone}&code=${user.membershipCode}` : '';
+        const res = await fetch(`/api/club/broadcasts${query}`);
+        const data = await res.json();
+        if (res.ok) setBroadcasts(data);
+      } catch (err) {}
+    };
+    fetchBroadcasts();
+  }, [user]);
 
   useEffect(() => {
     // Hero Animations
@@ -26,6 +42,11 @@ export default function Home() {
       gsap.fromTo('.hero-reveal',
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 2.2 }
+      );
+
+      gsap.fromTo('.scale-logo',
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 0.35, duration: 2.5, ease: 'power2.out', delay: 1.5 }
       );
 
       // Section Reveals
@@ -62,8 +83,8 @@ export default function Home() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (res.ok || data.membershipCode) {
-        setUser(data.membershipCode ? data : { ...data, name: formData.name });
+      if (res.ok) {
+        setUser(data);
       } else {
         setError(data.error || 'Ein Fehler ist aufgetreten');
       }
@@ -71,6 +92,30 @@ export default function Home() {
       setError('Verbindung zum Server fehlgeschlagen');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLookupLoading(true);
+    setLookupError('');
+    try {
+      const res = await fetch('/api/club/lookup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: lookupData.name, membershipCode: lookupData.code }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data);
+        document.getElementById('club')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        setLookupError(data.error || 'Nicht gefunden');
+      }
+    } catch (err) {
+      setLookupError('Fehler');
+    } finally {
+      setLookupLoading(false);
     }
   };
 
@@ -99,13 +144,57 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleReviewSubmit = async () => {
+    try {
+      await fetch('/api/reviews/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ membershipCode: user.membershipCode }),
+      });
+      // Update local state to show PENDING
+      setUser({ ...user, googleReviewStatus: 'PENDING' });
+    } catch (err) {}
+  };
+
   return (
     <main className="bg-obsidian-base overflow-x-hidden">
 
+      {/* LOOKUP BAR */}
+      <div className="fixed top-20 left-0 w-full z-40 px-4 md:px-0">
+        <div className="max-w-4xl mx-auto glass-panel rounded-full py-2 px-4 md:px-8 flex flex-col md:flex-row items-center gap-4 border border-white/5 shadow-2xl backdrop-blur-xl">
+           <div className="hidden md:block text-[9px] font-bold text-gold uppercase tracking-[0.3em] whitespace-nowrap">Stempel-Check:</div>
+           <form onSubmit={handleLookup} className="flex flex-1 w-full gap-2 md:gap-4">
+              <input
+                type="text"
+                placeholder="NAME"
+                required
+                value={lookupData.name}
+                onChange={(e) => setLookupData({ ...lookupData, name: e.target.value })}
+                className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-[10px] text-white focus:outline-none focus:border-gold/50 transition-colors uppercase font-bold tracking-widest"
+              />
+              <input
+                type="text"
+                placeholder="CODE"
+                required
+                value={lookupData.code}
+                onChange={(e) => setLookupData({ ...lookupData, code: e.target.value })}
+                className="w-24 md:w-32 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-[10px] text-white focus:outline-none focus:border-gold/50 transition-colors uppercase font-bold tracking-widest"
+              />
+              <Button type="submit" disabled={lookupLoading} variant="gold" className="rounded-full px-4 py-1.5 h-auto text-[9px] font-bold whitespace-nowrap">
+                {lookupLoading ? '...' : 'CHECK'}
+              </Button>
+           </form>
+           {lookupError && <div className="text-[8px] text-red-500 font-bold uppercase animate-pulse">{lookupError}</div>}
+        </div>
+      </div>
+
       {/* HERO SECTION */}
       <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16 md:pt-20">
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[60vw] h-[90vw] md:h-[60vw] bg-gold/20 rounded-full blur-[60px] md:blur-[150px] animate-pulse-slow"></div>
+          <div className="relative w-[85vw] md:w-[50vw] aspect-square scale-logo mix-blend-screen">
+             <Image src="/logo.jpg" alt="Logo" fill className="object-contain opacity-35" priority />
+          </div>
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
@@ -215,8 +304,54 @@ export default function Home() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-start animate-fade-in">
+                <div className="flex flex-col items-start animate-fade-in w-full">
                   <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
+
+                  {/* BROADCASTS */}
+                  {broadcasts.length > 0 && (
+                    <div className="w-full space-y-3 mb-8">
+                      {broadcasts.map((b, i) => (
+                        <div key={i} className="p-4 bg-white/5 border-l-2 border-gold rounded-r-xl">
+                          <h4 className="text-[10px] font-bold text-gold uppercase tracking-widest mb-1">{b.title}</h4>
+                          <p className="text-xs text-gray-400 font-light">{b.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* GOOGLE REVIEW PROMPT */}
+                  {user.googleReviewStatus === 'NONE' && (
+                    <div className="mb-8 p-6 bg-gold/10 border border-gold/30 rounded-2xl w-full max-w-md group">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center">
+                          <Star className="text-black w-4 h-4 fill-black" />
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-white uppercase tracking-widest block">+1 Gratis Stempel</span>
+                          <span className="text-[8px] text-gold font-bold uppercase tracking-widest">Google Maps Special</span>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-400 mb-6 font-light leading-relaxed">
+                        Bewerte unser Handwerk auf Google Maps und erhalte einen zusätzlichen Stempel als Dankeschön für dein Feedback!
+                      </p>
+                      <a
+                        href="https://maps.app.goo.gl/ti7Co6ecNBh9XnYB6?g_st=ic"
+                        target="_blank"
+                        onClick={handleReviewSubmit}
+                        className="flex items-center justify-center gap-2 w-full bg-gold text-black text-xs font-bold py-4 rounded-xl hover:bg-white transition-all transform hover:scale-[1.02] active:scale-[0.98] uppercase tracking-[0.2em]"
+                      >
+                        Jetzt Bewerten <ArrowRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                  )}
+
+                  {user.googleReviewStatus === 'PENDING' && (
+                    <div className="mb-8 p-4 bg-white/5 border border-white/10 rounded-xl w-full max-w-md flex items-center gap-4">
+                      <div className="w-2 h-2 rounded-full bg-gold animate-pulse"></div>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Review eingereicht. Admin prüft es in Kürze...</p>
+                    </div>
+                  )}
+
                   <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
                   <div className="flex flex-wrap gap-4 mb-8">
                     <Button
@@ -322,12 +457,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {menuItems.slice(0, 3).map((item, i) => (
               <div key={item.id} className="reveal group">
-                <div className="relative h-[400px] overflow-hidden rounded-2xl mb-6">
+                <div className="relative h-[400px] overflow-hidden rounded-2xl mb-6 mask-blur">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.5] group-hover:grayscale-0"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.5] group-hover:grayscale-0 filter-sharp"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
                   <div className="absolute bottom-6 left-6">
@@ -375,13 +510,13 @@ export default function Home() {
               </div>
             </div>
             <div className="reveal order-1 lg:order-2">
-              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden glass-panel p-4">
+              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden glass-panel p-4 mask-blur">
                 <div className="relative w-full h-full rounded-2xl overflow-hidden">
                   <Image
                     src="/pics/7.webp"
                     alt="Restaurant Storefront"
                     fill
-                    className="object-cover"
+                    className="object-cover filter-sharp"
                   />
                 </div>
                 <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gold rounded-2xl flex items-center justify-center rotate-6 shadow-2xl">
@@ -409,6 +544,13 @@ export default function Home() {
         }
         .animate-fade-in {
           animation: fade-in 0.5s ease-out forwards;
+        }
+        .filter-sharp {
+          filter: contrast(1.15) brightness(1.05) saturate(1.1);
+        }
+        .mask-blur {
+          mask-image: radial-gradient(circle, black 65%, transparent 100%);
+          -webkit-mask-image: radial-gradient(circle, black 65%, transparent 100%);
         }
       `}</style>
     </main>

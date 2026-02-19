@@ -5,7 +5,12 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Protected routes
-  if (pathname.startsWith('/admin') || pathname.startsWith('/seller')) {
+  if (
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/seller') ||
+    pathname.startsWith('/api/admin') ||
+    pathname.startsWith('/api/seller')
+  ) {
     const authToken = request.cookies.get('auth_token')?.value
     const adminPassword = process.env.ADMIN_PASSWORD || 'donerhaus2026'
 
@@ -20,5 +25,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/seller/:path*', '/admin', '/seller'],
+  matcher: [
+    '/admin/:path*',
+    '/seller/:path*',
+    '/admin',
+    '/seller',
+    '/api/admin/:path*',
+    '/api/seller/:path*'
+  ],
 }
