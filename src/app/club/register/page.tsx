@@ -14,8 +14,12 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [membershipCode, setMembershipCode] = useState('');
   const [copied, setCopied] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleWalletDownload = () => {
+    if (!membershipCode) return;
+    window.location.href = `/api/wallet?code=${membershipCode}&name=${encodeURIComponent(formData.name)}`;
+  };
 
   const handleDownload = async () => {
     if (cardRef.current === null) return;
@@ -158,14 +162,14 @@ export default function RegisterPage() {
                 <p className="text-gray-500 text-sm md:text-lg font-light mb-8 md:mb-12">Willkommen im Club. Deine Reise zu exzellentem Geschmack beginnt jetzt.</p>
               </div>
 
-              <div className="relative flex justify-center mb-12 w-full">
-                <div ref={cardRef} className="w-full max-w-[400px] aspect-[1.6/1] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden group shadow-2xl">
+              <div className="relative flex justify-center mb-12 w-full overflow-hidden">
+                <div ref={cardRef} className="w-full max-w-[340px] md:max-w-[400px] aspect-[1.6/1] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden group shadow-2xl">
                   {/* Decorative Elements */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
 
                   <div className="flex justify-between items-start relative z-10">
                     <div>
-                      <div className="font-display font-bold text-lg md:text-2xl text-white tracking-widest">DÖNERHAUS</div>
+                      <div className="font-display font-bold text-lg md:text-2xl text-white tracking-widest leading-tight">DÖNERHAUS</div>
                       <div className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-gold mt-1 font-bold">Elite Member</div>
                     </div>
                     <div className="flex flex-col items-end gap-2">
@@ -176,24 +180,24 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 relative z-10">
-                    <Zap className="text-white/40 w-4 h-4 fill-white/40" />
-                    <div className="px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
-                      <span className="text-[8px] font-bold text-gold uppercase tracking-[0.2em]">10 Stamps = 1 Free Döner</span>
+                  <div className="flex items-center gap-3 md:gap-4 relative z-10">
+                    <Zap className="text-white/40 w-3 h-3 md:w-4 md:h-4 fill-white/40" />
+                    <div className="px-2 md:px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
+                      <span className="text-[7px] md:text-[8px] font-bold text-gold uppercase tracking-[0.2em]">10 Stamps = 1 Free Döner</span>
                     </div>
                   </div>
 
                   <div className="relative z-10">
-                    <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Membership ID</div>
-                    <div className="font-mono text-xl md:text-3xl text-white tracking-widest text-glow mb-3 md:mb-4">{membershipCode}</div>
+                    <div className="text-[8px] md:text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Membership ID</div>
+                    <div className="font-mono text-xl md:text-3xl text-white tracking-widest text-glow mb-2 md:mb-4">{membershipCode}</div>
                     <div className="flex justify-between items-end border-t border-white/5 pt-3 md:pt-4">
                       <div>
                         <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Member Name</div>
-                        <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{formData.name}</div>
+                        <div className="font-display text-[10px] md:text-sm text-gray-300 uppercase tracking-wider truncate max-w-[120px] md:max-w-none">{formData.name}</div>
                       </div>
                       <div className="text-right">
                         <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Stamps</div>
-                        <div className="text-white font-bold text-lg">0<span className="text-gray-600 text-xs ml-1">/ 10</span></div>
+                        <div className="text-white font-bold text-md md:text-lg">0<span className="text-gray-600 text-xs ml-1">/ 10</span></div>
                       </div>
                     </div>
                   </div>
@@ -208,7 +212,7 @@ export default function RegisterPage() {
                   <Download className="w-3 h-3 mr-2" /> Save as Image
                 </Button>
                 <Button
-                  onClick={() => setShowWalletModal(true)}
+                  onClick={handleWalletDownload}
                   variant="outline"
                   className="rounded-full px-6 py-3 h-auto text-[10px] border-white/10"
                 >
@@ -224,54 +228,6 @@ export default function RegisterPage() {
         </AnimatePresence>
       </div>
 
-      {/* Apple Wallet Instructions Modal */}
-      <AnimatePresence>
-        {showWalletModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowWalletModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-obsidian-surface border border-white/10 rounded-3xl p-8 shadow-2xl"
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                  <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
-                </div>
-                <h3 className="text-2xl font-display font-bold text-white mb-4 uppercase">Apple Wallet</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                  Um deine Karte zum Apple Wallet hinzuzufügen, speichere sie bitte zuerst als Bild und füge sie manuell hinzu oder nutze einen Wallet-Pass Generator mit deinem Code: <span className="text-gold font-mono font-bold">{membershipCode}</span>.
-                </p>
-                <div className="space-y-4">
-                  <Link
-                    href="https://support.apple.com/de-de/guide/iphone/iph8200f898c/ios"
-                    target="_blank"
-                    className="block w-full"
-                  >
-                    <Button variant="gold" className="w-full rounded-2xl">
-                      Anleitung öffnen
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowWalletModal(false)}
-                    className="w-full rounded-2xl border-white/5"
-                  >
-                    Schließen
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
