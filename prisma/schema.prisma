@@ -17,6 +17,16 @@ model Customer {
   membershipCode   String   @unique
   coupons          Int      @default(0) // Number of stamps toward free döner
   receivedFirstGift Boolean  @default(false) // Whether they received the first-purchase free fries
+  googleReviewStatus String  @default("NONE") // NONE, PENDING, APPROVED
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Broadcast {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  target      String   @default("ALL") // ALL, PHONE, CODE
+  targetValue String?
+  createdAt   DateTime @default(now())
 }

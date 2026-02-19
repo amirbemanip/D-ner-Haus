@@ -55,11 +55,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (data.membershipCode) {
-          setMembershipCode(data.membershipCode);
-        } else {
-          setError(data.error || 'Something went wrong');
-        }
+        setError(data.error || 'Something went wrong');
       } else {
         setMembershipCode(data.membershipCode);
       }

@@ -16,8 +16,7 @@ export async function POST(request: Request) {
 
     if (existing) {
       return NextResponse.json({
-        error: 'Telefonnummer bereits registriert',
-        membershipCode: existing.membershipCode
+        error: 'Diese Telefonnummer ist bereits registriert. Bitte verwende den Stempel-Check oben, um deinen Status zu sehen.',
       }, { status: 400 })
     }
 
