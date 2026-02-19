@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     })
 
     // Filter broadcasts based on target
-    const filtered = broadcasts.filter(b => {
+    const filtered = broadcasts.filter((b: any) => {
       if (b.target === 'ALL') return true;
       if (phone && b.target === 'PHONE' && b.targetValue === phone) return true;
       if (code && b.target === 'CODE' && b.targetValue === code) return true;
