@@ -185,3 +185,30 @@ html.lenis {
 .cursor-hover {
   cursor: none !important;
 }
+
+@media print {
+  @page {
+    size: 85mm 55mm;
+    margin: 0;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #visual-card, #visual-card * {
+    visibility: visible !important;
+  }
+  #visual-card {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 85mm;
+    height: 55mm;
+    margin: 0;
+    padding: 20px;
+    border: none !important;
+    box-shadow: none !important;
+    background: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
