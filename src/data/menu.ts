@@ -13,7 +13,7 @@ export const menuItems: MenuItem[] = [
     title: 'Klassischer Döner',
     price: '€7.50',
     description: 'Traditioneller Kalbsdöner mit frischem Salat und unserer hausgemachten Knoblauchsauce in geröstetem Brot.',
-    image: '/pics/classic.jpg',
+    image: '/pics/classic.webp',
     category: 'doner'
   },
   {
@@ -21,7 +21,7 @@ export const menuItems: MenuItem[] = [
     title: 'Hähnchen Döner',
     price: '€7.00',
     description: 'Marinierte Hähnchenbrust, dünn geschnitten, serviert mit pikanter Joghurtsauce und gemischtem Salat.',
-    image: '/pics/chicken.jpg',
+    image: '/pics/chicken.webp',
     category: 'doner'
   },
   {
@@ -29,7 +29,7 @@ export const menuItems: MenuItem[] = [
     title: 'Vegetarischer Döner',
     price: '€6.50',
     description: 'Knusprige Falafel oder gegrilltes Gemüse mit Hummus und frischem Salat in unserem handwerklichen Brot.',
-    image: '/pics/veggie.jpg',
+    image: '/pics/veggie.webp',
     category: 'doner'
   },
   {
@@ -37,7 +37,7 @@ export const menuItems: MenuItem[] = [
     title: 'Signature Pommes',
     price: '€4.50',
     description: 'Goldbraun knusprige Pommes, gewürzt mit unserer hauseigenen Gewürzmischung.',
-    image: '/pics/fries.jpg',
+    image: '/pics/fries.webp',
     category: 'side'
   },
   {
@@ -45,7 +45,7 @@ export const menuItems: MenuItem[] = [
     title: 'Kalte Getränke',
     price: '€3.00',
     description: 'Auswahl an erfrischenden Softdrinks, Ayran und Mineralwasser.',
-    image: '/pics/drinks.jpg',
+    image: '/pics/drinks.webp',
     category: 'drink'
   }
 ];

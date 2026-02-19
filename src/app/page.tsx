@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight } from 'lucide-react';
+import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight, Search, X, CheckCircle2, MessageSquare } from 'lucide-react';
 import { menuItems } from '@/data/menu';
 import { Button } from '@/components/ui/Button';
 
@@ -13,9 +13,12 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({ name: '', phone: '' });
+  const [lookupData, setLookupData] = useState({ name: '', code: '' });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [lookupError, setLookupError] = useState('');
+  const [showLookup, setShowLookup] = useState(false);
 
   useEffect(() => {
     // Hero Animations
@@ -23,6 +26,11 @@ export default function Home() {
       gsap.fromTo('.hero-reveal',
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 2.2 }
+      );
+
+      gsap.fromTo('#hero-logo',
+        { scale: 0.9, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 2.5, ease: 'expo.out', delay: 2.4 }
       );
 
       // Section Reveals
@@ -59,10 +67,14 @@ export default function Home() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (res.ok || data.membershipCode) {
-        setUser(data.membershipCode ? data : { ...data, name: formData.name });
+      if (res.ok) {
+        setUser(data);
       } else {
-        setError(data.error || 'Ein Fehler ist aufgetreten');
+        if (data.error === 'Telefonnummer bereits registriert') {
+            setError('Diese Telefonnummer ist bereits registriert.');
+        } else {
+            setError(data.error || 'Ein Fehler ist aufgetreten');
+        }
       }
     } catch (err) {
       setError('Verbindung zum Server fehlgeschlagen');
@@ -71,8 +83,103 @@ export default function Home() {
     }
   };
 
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setLookupError('');
+    try {
+      const res = await fetch(`/api/customer/${lookupData.code}`);
+      const data = await res.json();
+      if (res.ok) {
+        if (data.name.toLowerCase().includes(lookupData.name.toLowerCase()) || lookupData.name.toLowerCase().includes(data.name.toLowerCase())) {
+          setUser(data);
+          setShowLookup(false);
+        } else {
+          setLookupError('Name und Code stimmen nicht überein');
+        }
+      } else {
+        setLookupError('Mitglied nicht gefunden');
+      }
+    } catch (err) {
+      setLookupError('Abfrage fehlgeschlagen');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClaimReview = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch(`/api/customer/${user.membershipCode}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'claim_review' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data);
+        window.open('https://search.google.com/local/writereview?placeid=ChIJf0mCBPlXn0cR8p77p3120sA', '_blank');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <main className="bg-obsidian-base overflow-x-hidden">
+
+      {/* Top Bar / Lookup Toggle */}
+      <div className="fixed top-24 left-0 w-full z-[40] flex justify-center px-6 pointer-events-none">
+        <button
+          onClick={() => setShowLookup(!showLookup)}
+          className="pointer-events-auto bg-white/5 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-[10px] font-bold tracking-widest text-gray-400 hover:text-gold transition-colors flex items-center gap-2"
+        >
+          <Search className="w-3 h-3" /> STAMP STATUS CHECK
+        </button>
+      </div>
+
+      {/* Global Message Banner */}
+      {user?.globalMessage && (
+          <div className="fixed top-36 left-0 w-full z-[35] flex justify-center px-6 animate-bounce">
+              <div className="bg-gold/90 text-black px-6 py-2 rounded-xl shadow-2xl flex items-center gap-3">
+                  <MessageSquare className="w-4 h-4" />
+                  <span className="text-[11px] font-bold uppercase tracking-tight">{user.globalMessage}</span>
+              </div>
+          </div>
+      )}
+
+      {/* Lookup Modal */}
+      {showLookup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowLookup(false)} />
+          <div className="relative w-full max-w-md bg-obsidian-surface border border-white/10 rounded-3xl p-8 shadow-2xl">
+            <button onClick={() => setShowLookup(false)} className="absolute top-6 right-6 text-gray-500 hover:text-white"><X /></button>
+            <h3 className="text-xl font-display font-bold text-white mb-6 uppercase tracking-widest text-center">Member Lookup</h3>
+            <form onSubmit={handleLookup} className="space-y-4">
+              <input
+                type="text"
+                placeholder="FULL NAME"
+                required
+                className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none"
+                value={lookupData.name}
+                onChange={(e) => setLookupData({...lookupData, name: e.target.value})}
+              />
+              <input
+                type="text"
+                placeholder="MEMBERSHIP CODE (6 DIGITS)"
+                required
+                className="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-white focus:border-gold outline-none"
+                value={lookupData.code}
+                onChange={(e) => setLookupData({...lookupData, code: e.target.value})}
+              />
+              {lookupError && <p className="text-red-500 text-[10px] text-center font-bold uppercase tracking-widest">{lookupError}</p>}
+              <Button type="submit" disabled={loading} variant="gold" size="lg" className="w-full">
+                {loading ? 'LOOKING UP...' : 'CHECK STATUS'}
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* HERO SECTION */}
       <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16 md:pt-20">
@@ -85,11 +192,25 @@ export default function Home() {
             <div className="text-[10px] md:text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
           </div>
 
-          <h1 className="font-display font-bold text-[clamp(2.5rem,15vw,12rem)] leading-[0.85] uppercase mb-6 md:mb-8 mix-blend-overlay">
-            <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
-            <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
-            <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
-          </h1>
+          <div className="relative inline-block w-full">
+            {/* Background Hero Logo - MOVED INSIDE THE WRAPPER FOR BETTER SCALE */}
+            <div id="hero-logo" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[85vw] md:max-w-[50vw] aspect-square pointer-events-none opacity-0 select-none overflow-hidden z-0">
+              <div className="relative w-full h-full opacity-[0.35] grayscale contrast-125">
+                <Image
+                  src="/logo.jpg"
+                  alt=""
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            <h1 className="relative z-10 font-display font-bold text-[clamp(2.5rem,15vw,12rem)] leading-[0.85] uppercase mb-6 md:mb-8 mix-blend-overlay">
+              <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
+              <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
+              <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
+            </h1>
+          </div>
 
           <div className="max-w-xl mx-auto mb-12 px-4">
             <p className="text-gray-400 font-sans text-sm md:text-lg leading-relaxed hero-reveal opacity-0">
@@ -189,6 +310,41 @@ export default function Home() {
               ) : (
                 <div className="flex flex-col items-start animate-fade-in">
                   <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
+
+                  {/* Google Review Section */}
+                  {!user.googleReviewClaimed && (
+                    <div className="mb-8 w-full">
+                        <div className="bg-white/5 border border-gold/30 rounded-2xl p-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Star className="w-12 h-12 text-gold fill-gold" />
+                            </div>
+                            <h4 className="text-xs font-bold text-gold uppercase tracking-widest mb-2">LIMITED OFFER</h4>
+                            <p className="text-sm text-gray-300 mb-4 leading-relaxed">
+                                Bewerte uns auf Google Maps und erhalte <span className="text-gold font-bold">+1 Stempel</span> als Dankeschön!
+                            </p>
+                            <Button
+                                onClick={handleClaimReview}
+                                variant="gold"
+                                size="sm"
+                                className="w-full md:w-auto"
+                                disabled={user.googleReviewPending}
+                            >
+                                {user.googleReviewPending ? 'VERIFICATION PENDING...' : 'REVIEW ON GOOGLE'}
+                            </Button>
+                            {user.googleReviewPending && (
+                                <p className="mt-2 text-[9px] text-gray-500 font-mono italic">Our manager will verify your review shortly.</p>
+                            )}
+                        </div>
+                    </div>
+                  )}
+
+                  {user.googleReviewClaimed && (
+                    <div className="mb-8 flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full">
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">Review Reward Claimed</span>
+                    </div>
+                  )}
+
                   <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
                   <div className="flex flex-wrap gap-4 mb-8">
                     <Button
