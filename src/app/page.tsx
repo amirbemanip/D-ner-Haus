@@ -4,9 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight } from 'lucide-react';
+import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight, Download, Printer, Copy, Check } from 'lucide-react';
 import { menuItems } from '@/data/menu';
 import { Button } from '@/components/ui/Button';
+import { toPng } from 'html-to-image';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,6 +17,8 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Hero Animations
@@ -69,6 +72,32 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownload = async () => {
+    if (cardRef.current === null) return;
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
+      const link = document.createElement('a');
+      link.download = `donerhaus-vip-card-${user?.membershipCode}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('oops, something went wrong!', err);
+    }
+  };
+
+  const handleCopy = () => {
+    if (!user?.membershipCode) return;
+    navigator.clipboard.writeText(user.membershipCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAppleWallet = () => {
+    if (!user?.membershipCode) return;
+    const url = `/api/wallet?code=${user.membershipCode}&name=${encodeURIComponent(user.name || formData.name)}`;
+    window.location.href = url;
   };
 
   return (
@@ -189,15 +218,36 @@ export default function Home() {
               ) : (
                 <div className="flex flex-col items-start animate-fade-in">
                   <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
-                  <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
-                  <button onClick={() => setUser(null)} className="text-xs text-gray-600 hover:text-white underline cursor-hover">Neuen Account erstellen</button>
+                  <p className="text-sm text-gray-500 mb-12 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
+
+                  <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
+                    <Button onClick={handleCopy} variant="outline" className="rounded-full px-6 py-3 h-auto text-[10px] border-white/10">
+                      {copied ? 'Copied!' : 'Copy Code'}
+                    </Button>
+                    <Button onClick={handleDownload} variant="gold" className="rounded-full px-6 py-3 h-auto text-[10px]">
+                      <Download className="w-3 h-3 mr-2" /> Save Image
+                    </Button>
+                    <Button
+                      onClick={handleAppleWallet}
+                      variant="outline"
+                      className="rounded-full px-6 py-3 h-auto text-[10px] border-white/10"
+                    >
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
+                      Apple Wallet
+                    </Button>
+                    <Button onClick={() => window.print()} variant="outline" className="rounded-full px-6 py-3 h-auto text-[10px]">
+                      <Printer className="w-3 h-3 mr-2" /> Print
+                    </Button>
+                  </div>
+
+                  <button onClick={() => setUser(null)} className="text-[10px] text-gray-600 hover:text-white underline cursor-hover mt-12 uppercase tracking-widest font-bold">Account wechseln</button>
                 </div>
               )}
             </div>
 
             <div className="relative flex justify-center reveal mt-12 lg:mt-0">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px]"></div>
-              <div id="visual-card" className="w-full max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-6 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
+              <div ref={cardRef} id="visual-card" className="w-full max-w-md aspect-[1.6/1] card-bg-front p-6 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
 

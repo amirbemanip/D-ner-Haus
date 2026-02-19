@@ -14,8 +14,6 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [membershipCode, setMembershipCode] = useState('');
   const [copied, setCopied] = useState(false);
-  const [showWalletModal, setShowWalletModal] = useState(false);
-  const [walletLoading, setWalletLoading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
@@ -37,34 +35,10 @@ export default function RegisterPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleAppleWallet = async () => {
-    setWalletLoading(true);
-    try {
-      const response = await fetch('/api/wallet', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          membershipCode,
-          name: formData.name
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to generate pass');
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `donerhaus-${membershipCode}.pkpass`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Wallet error:', err);
-      setShowWalletModal(true); // Fallback to instructional modal on error
-    } finally {
-      setWalletLoading(false);
-    }
+  const handleAppleWallet = () => {
+    // Using direct GET link is more reliable for file downloads on mobile/iOS
+    const url = `/api/wallet?code=${membershipCode}&name=${encodeURIComponent(formData.name)}`;
+    window.location.href = url;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -240,18 +214,11 @@ export default function RegisterPage() {
                 </Button>
                 <Button
                   onClick={handleAppleWallet}
-                  disabled={walletLoading}
                   variant="outline"
                   className="rounded-full px-6 py-3 h-auto text-[10px] border-white/10"
                 >
-                  {walletLoading ? (
-                    'Generating...'
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
-                      Apple Wallet
-                    </>
-                  )}
+                  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
+                  Apple Wallet
                 </Button>
                 <Button onClick={() => window.print()} variant="outline" className="rounded-full px-6 py-3 h-auto text-[10px]">
                   <Printer className="w-3 h-3 mr-2" /> Print
@@ -262,54 +229,6 @@ export default function RegisterPage() {
         </AnimatePresence>
       </div>
 
-      {/* Apple Wallet Instructions Modal */}
-      <AnimatePresence>
-        {showWalletModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowWalletModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-md bg-obsidian-surface border border-white/10 rounded-3xl p-8 shadow-2xl"
-            >
-              <div className="text-center">
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10">
-                  <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
-                </div>
-                <h3 className="text-2xl font-display font-bold text-white mb-4 uppercase">Apple Wallet</h3>
-                <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                  Um deine Karte zum Apple Wallet hinzuzufügen, speichere sie bitte zuerst als Bild und füge sie manuell hinzu oder nutze einen Wallet-Pass Generator mit deinem Code: <span className="text-gold font-mono font-bold">{membershipCode}</span>.
-                </p>
-                <div className="space-y-4">
-                  <Link
-                    href="https://support.apple.com/de-de/guide/iphone/iph8200f898c/ios"
-                    target="_blank"
-                    className="block w-full"
-                  >
-                    <Button variant="gold" className="w-full rounded-2xl">
-                      Anleitung öffnen
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowWalletModal(false)}
-                    className="w-full rounded-2xl border-white/5"
-                  >
-                    Schließen
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

@@ -1,15 +1,32 @@
 import { NextResponse } from 'next/server';
 
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const membershipCode = searchParams.get('code');
+  const name = searchParams.get('name');
+
+  return handleWalletRequest(membershipCode, name);
+}
+
 export async function POST(request: Request) {
   try {
     const { membershipCode, name } = await request.json();
+    return handleWalletRequest(membershipCode, name);
+  } catch (error) {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
+}
 
+async function handleWalletRequest(membershipCode: string | null, name: string | null) {
+  try {
     if (!membershipCode) {
       return NextResponse.json({ error: 'Membership code is required' }, { status: 400 });
     }
 
-    // Use environment variable for the API key with provided fallback
-    const apiKey = process.env.WALLETWALLET_API_KEY || 'ww_live_12edf7cd29beb42dcad8ff5596a07adf';
+    // Use environment variable for the API key
+    const apiKey = process.env.WALLETWALLET_API_KEY;
+
+    console.log(`Generating wallet pass for: ${membershipCode} (${name})`);
 
     const response = await fetch('https://api.walletwallet.dev/api/pkpass', {
       method: 'POST',
