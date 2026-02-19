@@ -8,9 +8,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Membership code is required' }, { status: 400 });
     }
 
-    // Use environment variable for the API key
-    // The user provided the curl with Bearer ww_live_...
-    const apiKey = process.env.WALLETWALLET_API_KEY || 'ww_live_placeholder';
+    // Use environment variable for the API key with provided fallback
+    const apiKey = process.env.WALLETWALLET_API_KEY || 'ww_live_12edf7cd29beb42dcad8ff5596a07adf';
 
     const response = await fetch('https://api.walletwallet.dev/api/pkpass', {
       method: 'POST',
