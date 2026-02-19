@@ -1,43 +1,43 @@
-"use client"
-import React from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-interface ButtonProps extends HTMLMotionProps<"button"> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'gold'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
-export const Button = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  className = '',
-  ...props
-}: ButtonProps) => {
-  const baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none tracking-widest uppercase';
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+    const variants = {
+      primary: "bg-white text-black hover:bg-gold",
+      secondary: "bg-white/10 text-white hover:bg-white/20",
+      outline: "border border-white/10 text-white hover:bg-white hover:text-black",
+      ghost: "text-gray-500 hover:text-white",
+      gold: "bg-gold text-black hover:bg-white"
+    }
 
-  const variants = {
-    primary: 'bg-brand-orange text-brand-black hover:bg-brand-orange-light shadow-[0_10px_30px_rgba(230,126,34,0.3)]',
-    secondary: 'bg-brand-white text-brand-black hover:bg-white',
-    outline: 'border border-brand-orange/50 text-brand-orange hover:bg-brand-orange hover:text-brand-black',
-    ghost: 'bg-transparent text-brand-white hover:bg-brand-white/10',
-  };
+    const sizes = {
+      sm: "px-4 py-2 text-[10px]",
+      md: "px-6 py-4 text-xs",
+      lg: "px-8 py-6 text-sm",
+      xl: "px-10 py-8 text-base"
+    }
 
-  const sizes = {
-    sm: 'px-4 py-2 text-[10px] rounded-brand-md',
-    md: 'px-6 py-3 text-[11px] rounded-brand-lg',
-    lg: 'px-10 py-4 text-xs rounded-brand-xl',
-    xl: 'px-12 py-6 text-sm rounded-brand-pill',
-  };
+    return (
+      <button
+        className={cn(
+          "btn-magnetic font-bold uppercase tracking-widest transition-all rounded-xl cursor-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2",
+          variants[variant],
+          sizes[size],
+          className
+        )}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+Button.displayName = "Button"
 
-  return (
-    <motion.button
-      whileHover={{ y: -2 }}
-      whileTap={{ scale: 0.98 }}
-      className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
-      {...props}
-    >
-      {children}
-    </motion.button>
-  );
-};
+export { Button }

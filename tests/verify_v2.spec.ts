@@ -1,38 +1,36 @@
 import { test, expect } from '@playwright/test';
 
-test.use({
-  viewport: { width: 375, height: 812 }, // iPhone X
-  userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Mobile/15E148 Safari/604.1',
-});
+const BASE_URL = 'http://localhost:3000';
 
 test('verify mobile responsiveness and connect page', async ({ page }) => {
-  // 1. Home Page
-  await page.goto('http://localhost:3000');
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'v2_home_mobile.png' });
+  // Mock the registration API
+  await page.route('**/api/register', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ membershipCode: '123456', name: 'Mobile User' }),
+    });
+  });
 
-  // 2. Club Registration Page
-  await page.goto('http://localhost:3000/club/register');
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'v2_register_mobile.png' });
+  // Check Connect Page
+  await page.goto(`${BASE_URL}/connect`);
+  await page.waitForSelector('#loader', { state: 'hidden', timeout: 10000 });
+  // Navbar is hidden on /connect, so we check for page content
+  await expect(page.getByText(/Follow us on IG/i)).toBeVisible();
 
-  // 3. Connect Page (Linktree style)
-  await page.goto('http://localhost:3000/connect');
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'v2_connect_mobile.png' });
+  // Check Registration Page on Mobile
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(`${BASE_URL}/club/register`);
+  await page.waitForSelector('#loader', { state: 'hidden', timeout: 10000 });
 
-  // Verify Navbar/Footer are hidden on Connect
-  const navbar = page.locator('nav');
-  const footer = page.locator('footer');
-  await expect(navbar).not.toBeVisible();
-  await expect(footer).not.toBeVisible();
+  await expect(page.getByText(/Join/i)).toBeVisible();
+  await expect(page.getByText(/Elite/i)).toBeVisible();
 
-  // 4. Success state of Registration (mocking registration success)
   // Fill form
-  await page.goto('http://localhost:3000/club/register');
-  await page.fill('input[placeholder*="Name"]', 'Test User');
-  await page.fill('input[placeholder*="Phone"]', '0123456789');
-  await page.click('button:has-text("Join the Club")');
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: 'v2_success_mobile.png' });
+  await page.locator('input[placeholder*="Mustermann"]').fill('Mobile User');
+  await page.locator('input[placeholder*="49"]').fill('0123456789');
+  await page.getByRole('button', { name: /REGISTER/i }).click();
+
+  // Should see success
+  await expect(page.getByText(/Activated/i)).toBeVisible();
 });

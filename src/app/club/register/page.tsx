@@ -1,12 +1,12 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { CheckCircle2, Ticket, Gift, Copy, Check, Sparkles, Download, Printer } from 'lucide-react';
+import { CheckCircle2, Ticket, Gift, Copy, Check, Sparkles, Download, Printer, ArrowLeft, Wifi, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { toPng } from 'html-to-image';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: '', phone: '' });
@@ -14,11 +14,11 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [membershipCode, setMembershipCode] = useState('');
   const [copied, setCopied] = useState(false);
-  const cardRef = React.useRef<HTMLDivElement>(null);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
     if (cardRef.current === null) return;
-
     try {
       const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
       const link = document.createElement('a');
@@ -67,14 +67,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-32 px-6 relative overflow-hidden bg-brand-black">
-      {/* Editorial Background */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-orange/20 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-brand-orange/10 rounded-full blur-[150px]" />
-      </div>
+    <div className="min-h-screen bg-obsidian-base pt-32 pb-20 px-6 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="max-w-2xl w-full relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
+        <Link href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-12 uppercase text-[10px] font-bold tracking-widest">
+          <ArrowLeft className="w-3 h-3" /> Back to Home
+        </Link>
+
         <AnimatePresence mode="wait">
           {!membershipCode ? (
             <motion.div
@@ -82,80 +83,64 @@ export default function RegisterPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="grid lg:grid-cols-2 gap-20 items-center"
             >
-              <Card className="p-6 md:p-16" animate={false}>
-                <div className="text-center space-y-6 mb-12">
-                  <Badge variant="primary">Prestige-Mitgliedschaft</Badge>
-                  <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none">
-                    Werde Teil der <br/> <span className="text-brand-orange">Döner-Elite</span>
-                  </h1>
-                  <p className="text-brand-white/40 text-sm font-medium max-w-sm mx-auto">
-                    Schalte exklusive kulinarische Privilegien frei und verfolge deinen Weg zu kostenlosen Belohnungen.
-                  </p>
-                </div>
+              <div>
+                <span className="text-gold tracking-[0.4em] text-[10px] font-bold uppercase block mb-6">Prestige Membership</span>
+                <h1 className="text-5xl md:text-7xl font-display font-bold text-white mb-8 leading-tight uppercase">
+                  Join the <br /> <span className="text-outline">Elite</span>
+                </h1>
+                <p className="text-gray-400 text-lg mb-12 font-light leading-relaxed">
+                  Unlock exclusive privileges. Collect stamps, enjoy rewards. <br />
+                  <span className="text-gold">10 Stamps = 1 Free Döner Kebab.</span>
+                </p>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Vollständiger Name</label>
-                      <input
-                        type="text"
-                        placeholder="z.B. Max Mustermann"
-                        required
-                        className="w-full h-16 bg-brand-black border border-brand-white/10 rounded-2xl px-6 font-bold focus:border-brand-orange outline-none transition-all placeholder:text-brand-white/10"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
+                <div className="grid grid-cols-2 gap-10">
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                      <Ticket className="w-5 h-5 text-gold" />
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-brand-white/30 ml-1">Mobilnummer</label>
-                      <input
-                        type="tel"
-                        placeholder="+49 123 4567890"
-                        required
-                        className="w-full h-16 bg-brand-black border border-brand-white/10 rounded-2xl px-6 font-bold focus:border-brand-orange outline-none transition-all placeholder:text-brand-white/10"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      />
+                    <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest leading-tight">10. Döner goes on us.</p>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/5">
+                      <Gift className="w-5 h-5 text-gold" />
                     </div>
+                    <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest leading-tight">Free fries on 1st order.</p>
+                  </div>
+                </div>
+              </div>
+
+              <Card className="p-10 relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-gold/50 to-transparent rounded-2xl blur opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-gray-500 ml-1">Full Name</label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. Max Mustermann"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] uppercase tracking-widest text-gray-500 ml-1">Phone Number</label>
+                    <Input
+                      type="tel"
+                      placeholder="+49 123..."
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
                   </div>
 
-                  {error && (
-                    <motion.p
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="text-[11px] font-bold text-red-500 bg-red-500/10 p-4 rounded-xl border border-red-500/20 text-center"
-                    >
-                      {error}
-                    </motion.p>
-                  )}
+                  {error && <p className="text-red-500 text-xs font-mono">{error}</p>}
 
-                  <Button type="submit" size="xl" className="w-full" disabled={loading}>
-                    {loading ? 'Verarbeitung...' : 'Jetzt registrieren'}
+                  <Button type="submit" disabled={loading} variant="primary" size="lg" className="w-full">
+                    {loading ? 'REGISTERING...' : 'REGISTER NOW'}
                   </Button>
                 </form>
-
-                <div className="mt-16 pt-10 border-t border-brand-white/5 grid grid-cols-2 gap-10">
-                  <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center">
-                      <Ticket className="w-5 h-5 text-brand-orange" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Loyalität</p>
-                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Der 10. Döner geht auf uns.</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-2xl glass flex items-center justify-center">
-                      <Gift className="w-5 h-5 text-brand-orange" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-brand-orange mb-1">Willkommen</p>
-                      <p className="text-xs font-bold text-brand-white/50 leading-tight">Kostenlose Pommes bei der 1. Bestellung.</p>
-                    </div>
-                  </div>
-                </div>
               </Card>
             </motion.div>
           ) : (
@@ -163,105 +148,60 @@ export default function RegisterPage() {
               key="success"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-center space-y-12"
             >
-              <Card className="p-6 md:p-20 text-center relative overflow-hidden group" animate={false}>
-                {/* Shimmer effect */}
-                <motion.div
-                  animate={{ x: ['-100%', '100%'] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-brand-orange/[0.03] to-transparent skew-x-12"
-                />
+              <div className="max-w-2xl mx-auto">
+                <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-gold/30">
+                  <Sparkles className="w-10 h-10 text-gold" />
+                </div>
+                <h2 className="text-5xl md:text-7xl font-display font-bold text-white uppercase tracking-tighter mb-4">Privilege <span className="text-gold">Activated</span></h2>
+                <p className="text-gray-500 text-lg font-light mb-12">Willkommen im Club. Deine Reise zu exzellentem Geschmack beginnt jetzt.</p>
+              </div>
 
-                <div className="relative z-10 space-y-12">
-                  <div className="space-y-6">
-                    <div className="w-24 h-24 glass-orange rounded-full flex items-center justify-center mx-auto mb-4 border-brand-orange/30">
-                      <Sparkles className="w-10 h-10 text-brand-orange" />
-                    </div>
-                    <Badge variant="primary">Willkommen im Club</Badge>
-                    <h2 className="text-4xl md:text-7xl font-black uppercase tracking-tighter leading-none">
-                      Privileg <br/> <span className="text-brand-orange">aktiviert.</span>
-                    </h2>
-                  </div>
-
-                  <div className="space-y-12">
-                    {/* VIP Card Preview */}
-                    <div className="relative group/card">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-brand-orange to-brand-orange-light rounded-[20px] blur opacity-20 group-hover/card:opacity-40 transition duration-1000"></div>
-                      <div
-                        ref={cardRef}
-                        className="print-card relative w-full max-w-[450px] mx-auto bg-brand-black border border-brand-white/10 rounded-[20px] overflow-hidden aspect-[1.6/1] flex flex-col justify-between p-8 text-left shadow-2xl"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-orange mb-1">Dönerhaus Nürnberg</p>
-                            <h3 className="text-2xl font-black uppercase tracking-tighter">Elite Member</h3>
-                          </div>
-                          <div className="w-10 h-10 glass-orange rounded-xl flex items-center justify-center">
-                            <Sparkles className="w-5 h-5 text-brand-orange" />
-                          </div>
+              <div className="relative perspective-1000 flex justify-center mb-12">
+                <div className={`flip-card w-full max-w-md h-[240px] cursor-pointer ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(!isFlipped)}>
+                  <div className="flip-card-inner">
+                    <div ref={cardRef} className="flip-card-front card-bg-front p-8 flex flex-col justify-between text-left">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-display font-bold text-2xl text-white tracking-widest">DÖNERHAUS</div>
+                          <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Elite Member</div>
                         </div>
-
-                        <div className="space-y-1">
-                          <p className="text-[8px] font-black uppercase tracking-[0.4em] text-brand-white/20">Mitgliedschaftscode</p>
-                          <p className="text-4xl md:text-5xl font-black tracking-[0.15em] text-brand-white">{membershipCode}</p>
-                        </div>
-
-                        <div className="flex justify-between items-end border-t border-brand-white/5 pt-6">
-                          <div>
-                            <p className="text-[8px] font-black uppercase tracking-widest text-brand-white/30 mb-0.5">Inhaber</p>
-                            <p className="text-xs font-bold uppercase tracking-tighter">{formData.name}</p>
-                          </div>
-                          <p className="text-[8px] font-bold italic text-brand-white/20 uppercase tracking-widest">Gültig in allen Filialen</p>
+                        <Wifi className="text-white/20 w-6 h-6 rotate-90" />
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <Zap className="text-white/40 w-4 h-4 fill-white/40" />
+                      </div>
+                      <div>
+                        <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
+                        <div className="font-mono text-3xl text-white tracking-widest text-glow">{membershipCode}</div>
+                        <div className="flex justify-between items-end mt-4">
+                          <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{formData.name}</div>
+                          <div className="text-[8px] text-gray-600">VALID THRU 12/99</div>
                         </div>
                       </div>
                     </div>
-
-                    <div className="flex flex-wrap justify-center gap-4">
-                      <button
-                        onClick={handleCopy}
-                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
-                      >
-                        {copied ? (
-                          <>
-                            <Check className="w-4 h-4 text-green-500" /> <span className="text-[10px] font-black uppercase tracking-widest">Kopiert</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Code kopieren</span>
-                          </>
-                        )}
-                      </button>
-
-                      <button
-                        onClick={handleDownload}
-                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
-                      >
-                        <Download className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Als Bild speichern</span>
-                      </button>
-
-                      <button
-                        onClick={() => window.print()}
-                        className="flex items-center gap-3 px-6 py-4 rounded-full glass hover:bg-brand-white/5 transition-all active:scale-95 border border-brand-white/5"
-                      >
-                        <Printer className="w-4 h-4 text-brand-orange" /> <span className="text-[10px] font-black uppercase tracking-widest">Karte Drucken</span>
-                      </button>
+                    <div className="flip-card-back card-bg-back p-8 flex flex-col justify-center items-center text-center">
+                      <div className="w-32 h-32 bg-white p-2 rounded mb-4">
+                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${membershipCode}`} className="w-full h-full object-cover" alt="QR" />
+                      </div>
+                      <div className="text-xs font-bold uppercase tracking-widest text-black/60">Digital Signature</div>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 gap-6 pt-10 border-t border-brand-white/5">
-                    <Link href="/">
-                      <Button variant="secondary" size="lg" className="w-full h-16">
-                        Zurück zur Startseite
-                      </Button>
-                    </Link>
-                  </div>
-
-                  <p className="text-[10px] font-bold text-brand-white/20 uppercase tracking-widest italic">
-                    *Zeige diesen Code an der Kasse vor, um deine Belohnungen einzulösen.
-                  </p>
                 </div>
-              </Card>
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-6">
+                <Button onClick={handleCopy} variant="outline" className="rounded-full px-8">
+                  {copied ? 'Copied!' : 'Copy Code'}
+                </Button>
+                <Button onClick={handleDownload} variant="outline" className="rounded-full px-8">
+                  Save as Image
+                </Button>
+                <Button onClick={() => window.print()} variant="outline" className="rounded-full px-8">
+                  Print Card
+                </Button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,317 +1,351 @@
 "use client"
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { ChevronRight, Star, Clock, MapPin, Sparkles, ArrowDownRight } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight } from 'lucide-react';
 import { menuItems } from '@/data/menu';
+import { Button } from '@/components/ui/Button';
 
-const container: any = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const itemAnim: any = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-};
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState({ name: '', phone: '' });
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  useEffect(() => {
+    // Hero Animations
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.hero-reveal',
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2, stagger: 0.1, ease: 'power3.out', delay: 2.2 }
+      );
+
+      // Section Reveals
+      gsap.utils.toArray('.reveal').forEach((el: any) => {
+        gsap.fromTo(el,
+          { y: 60, opacity: 0 },
+          {
+            y: 0, opacity: 1, duration: 1, ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 85%',
+            }
+          }
+        );
+      });
+
+      // Card Float
+      gsap.to('#visual-card', {
+        y: -20, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut'
+      });
+    }, heroRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok || data.membershipCode) {
+        setUser(data.membershipCode ? data : { ...data, name: formData.name });
+        setTimeout(() => setIsFlipped(true), 500);
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col">
-      {/* Hero Section - Editorial Style */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-brand-black pt-20">
-        <div className="absolute top-0 right-0 w-1/2 h-full hidden lg:block">
-          <motion.div
-            initial={{ scale: 1.2, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative h-full w-full"
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1633383718081-22ac93e3dbf1?q=80&w=2000&auto=format&fit=crop"
-              alt="Premium Döner"
-              fill
-              className="object-cover grayscale-[0.2] contrast-125"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-black via-brand-black/20 to-transparent" />
-          </motion.div>
+    <main className="bg-obsidian-base overflow-x-hidden">
+
+      {/* HERO SECTION */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-gold/20 rounded-full blur-[150px] animate-pulse-slow"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            >
-              <Badge variant="primary" className="mb-6">Seit 2024 • Nürnberg</Badge>
-              <h1 className="text-6xl md:text-[100px] font-black uppercase tracking-tighter leading-[0.8] mb-8">
-                Die Kunst <br/> des <span className="text-brand-orange">Döners</span>
-              </h1>
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <div className="inline-block overflow-hidden mb-4">
+            <div className="text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
+          </div>
 
-              <div className="flex items-start gap-8 mb-12">
-                <div className="w-[1px] h-24 bg-brand-orange/30 mt-2" />
-                <p className="text-lg md:text-xl text-brand-white/60 font-medium max-w-lg leading-relaxed italic">
-                  "Neudefinition der deutsch-türkischen Street-Food-Kultur durch Leidenschaft für Qualität und modernes kulinarisches Handwerk."
-                </p>
-              </div>
+          <h1 className="font-display font-bold text-[clamp(4rem,10vw,12rem)] leading-[0.85] uppercase mb-8 mix-blend-overlay">
+            <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
+            <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
+            <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
+          </h1>
 
-              <div className="flex flex-col sm:flex-row items-center gap-6">
-                <Button size="xl" className="w-full sm:w-auto group">
-                  Speisekarte <ArrowDownRight className="ml-2 w-5 h-5 group-hover:rotate-45 transition-transform" />
-                </Button>
-                <Link href="/club/register" className="w-full sm:w-auto">
-                  <Button variant="outline" size="xl" className="w-full sm:w-auto">
-                    Tritt dem Club bei
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
+          <div className="max-w-xl mx-auto mb-12">
+            <p className="text-gray-400 font-sans text-lg leading-relaxed hero-reveal opacity-0">
+              Kein Fast Food. Ein Statement. <br />
+              Frische Zutaten, exklusive Rezepturen und das Herz von Nürnberg.
+            </p>
+          </div>
+
+          <div className="flex flex-col md:flex-row justify-center gap-6 hero-reveal opacity-0">
+            <Link href="#club" className="btn-magnetic px-10 py-4 border border-white/20 rounded-full text-xs font-bold tracking-[0.2em] hover:text-black cursor-hover inline-flex items-center justify-center group">
+              <span>JOIN THE CLUB</span>
+              <ArrowRight className="ml-3 w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform" />
+            </Link>
+            <a href="https://maps.app.goo.gl/ti7Co6ecNBh9XnYB6?g_st=ic" target="_blank" className="px-10 py-4 text-xs font-bold tracking-[0.2em] text-gray-500 hover:text-white transition-colors cursor-hover flex items-center justify-center gap-2">
+              <MapPin className="w-4 h-4" /> FIND US
+            </a>
           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-10 left-6 flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.5em] text-brand-white/20"
-        >
-          <span className="w-12 h-[1px] bg-brand-white/10" />
-          Scrollen zum Entdecken
-        </motion.div>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 mix-blend-difference">
+          <div className="w-[1px] h-16 bg-white/20 overflow-hidden">
+            <div className="w-full h-full bg-white animate-float"></div>
+          </div>
+        </div>
       </section>
 
-      {/* Stats / Proof Section */}
-      <section className="py-12 md:py-24 border-y border-brand-white/5 bg-brand-charcoal/50 backdrop-blur-xl relative overflow-hidden">
-        {/* Subtly animated gradient background */}
-        <motion.div
-          animate={{ opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="absolute inset-0 bg-gradient-to-r from-brand-orange/5 via-transparent to-brand-orange/5"
-        />
-
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 relative z-10">
-          {[
-            { icon: Star, label: "4.9 Bewertung", sub: "Google Bewertungen" },
-            { icon: Clock, label: "Täglich", sub: "11:00 - 22:00" },
-            { icon: MapPin, label: "Nürnberg", sub: "Stadtzentrum" },
-            { icon: Sparkles, label: "Premium", sub: "Lokaler Bezug" }
-          ].map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex flex-col items-center text-center space-y-4"
-            >
-              <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center mb-2 border-brand-orange/10 group-hover:border-brand-orange transition-colors">
-                <item.icon className="w-6 h-6 text-brand-orange" />
+      {/* MARQUEE */}
+      <div className="py-10 border-y border-white/5 bg-obsidian-surface overflow-hidden relative z-20">
+        <div className="flex whitespace-nowrap gap-24 animate-marquee items-center">
+          {[1, 2].map((idx) => (
+            <div key={idx} className="flex items-center gap-24">
+              <div className="flex items-center gap-8 opacity-50">
+                <span className="text-6xl font-display font-bold text-transparent text-outline">PREMIUM QUALITY</span>
+                <Star className="text-gold w-8 h-8 fill-gold" />
               </div>
-              <div>
-                <span className="block text-xs font-black uppercase tracking-widest mb-1">{item.label}</span>
-                <span className="block text-[10px] font-bold text-brand-white/30 uppercase tracking-[0.2em]">{item.sub}</span>
+              <div className="flex items-center gap-8 opacity-50">
+                <span className="text-6xl font-display font-bold text-white">100% FRESH MEAT</span>
+                <Flame className="text-gold w-8 h-8 fill-gold" />
               </div>
-            </motion.div>
+              <div className="flex items-center gap-8 opacity-50">
+                <span className="text-6xl font-display font-bold text-transparent text-outline">HANDCRAFTED</span>
+                <Leaf className="text-gold w-8 h-8 fill-gold" />
+              </div>
+            </div>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* Awards & Recognition Section */}
-      <section className="py-20 bg-brand-black border-b border-brand-white/5 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col lg:flex-row items-center gap-12 justify-between">
-            <div className="flex-1 space-y-8">
-              <div className="flex items-center gap-4">
-                <span className="w-12 h-[1px] bg-brand-orange" />
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-orange">Anerkennung</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter leading-none">
-                Einer der <span className="text-brand-orange italic">Besten</span> in Nürnberg.
+      {/* LOYALTY SECTION */}
+      <section id="club" className="py-32 relative">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="reveal">
+              <span className="text-gold tracking-[0.4em] text-[10px] font-bold uppercase block mb-6">Exclusive Access</span>
+              <h2 className="text-5xl md:text-7xl font-display font-bold text-white mb-8 leading-tight">
+                BLACK <br /> <span className="text-outline">MEMBER</span>
               </h2>
-              <p className="text-brand-white/40 font-medium max-w-xl leading-relaxed">
-                Wir sind stolz darauf, von <span className="text-brand-white">DeinNaimberch</span> offiziell als einer der 6 besten Dönerläden Nürnbergs ausgezeichnet worden zu sein. Diese Anerkennung bestärkt uns in unserem Anspruch an höchste Qualität.
+              <p className="text-gray-400 text-lg mb-12 font-light">
+                Werde Teil des inneren Kreises. Sammle Punkte, genieße Vorteile. <br />
+                <span className="text-gold">10 Stempel = 1 Gratis Döner.</span>
               </p>
-              <a
-                href="https://deinnaemberch.de/die-6-besten-doener-in-nuernberg/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-4 group"
-              >
-                <div className="w-12 h-12 rounded-full glass border border-brand-white/10 flex items-center justify-center group-hover:border-brand-orange transition-colors">
-                  <ArrowDownRight className="w-5 h-5 group-hover:rotate-45 transition-transform" />
-                </div>
-                <span className="text-xs font-black uppercase tracking-widest group-hover:text-brand-orange transition-colors">Artikel lesen</span>
-              </a>
-            </div>
 
-            <div className="flex-1 relative">
-              <div className="relative group cursor-pointer">
-                <div className="absolute -inset-4 bg-brand-orange/20 rounded-[40px] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative glass border border-brand-white/10 rounded-[40px] p-10 md:p-16 flex flex-col items-center text-center space-y-6">
-                  <div className="w-20 h-20 glass-orange rounded-3xl flex items-center justify-center mb-4">
-                    <Star className="w-10 h-10 text-brand-orange fill-brand-orange" />
+              {!user ? (
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-gold to-orange-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                  <div className="relative glass-panel p-8 rounded-xl">
+                    <form onSubmit={handleRegister} className="space-y-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase tracking-widest text-gray-500 ml-1">Dein Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full bg-obsidian-base/50 border border-white/10 rounded-lg p-4 text-white focus:border-gold focus:outline-none transition-colors"
+                          placeholder="Name"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase tracking-widest text-gray-500 ml-1">Handynummer</label>
+                        <input
+                          type="tel"
+                          required
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className="w-full bg-obsidian-base/50 border border-white/10 rounded-lg p-4 text-white focus:border-gold focus:outline-none transition-colors"
+                          placeholder="017..."
+                        />
+                      </div>
+                      <Button type="submit" disabled={loading} variant="gold" size="lg" className="w-full mt-4">
+                        {loading ? 'PROCESSING...' : 'JOIN NOW & GET FREE FRIES'}
+                      </Button>
+                    </form>
                   </div>
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-brand-white/40">Top Ranking 2024</p>
-                    <p className="text-3xl md:text-5xl font-black uppercase tracking-tighter italic">Die Top 6 Elite</p>
-                  </div>
-                  <p className="text-xs font-bold text-brand-white/20 uppercase tracking-[0.3em]">Nürnbergs Döner-Kultur</p>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col items-start animate-fade-in">
+                  <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
+                  <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
+                  <button onClick={() => setUser(null)} className="text-xs text-gray-600 hover:text-white underline cursor-hover">Neuen Account erstellen</button>
+                </div>
+              )}
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Highlights Section */}
-      <section id="menu" className="py-20 md:py-40 bg-brand-black">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-8">
-            <div className="space-y-6">
-              <Badge variant="outline">Kuration</Badge>
-              <h2 className="text-5xl md:text-7xl lg:text-[100px] font-black uppercase tracking-tighter leading-none">
-                Signature <br/> <span className="text-outline">Kollektion</span>
-              </h2>
-            </div>
-            <p className="text-brand-white/40 max-w-sm font-medium leading-relaxed">
-              Jedes Gericht in unserer Signature-Kollektion ist das Ergebnis monatelanger Experimente mit Aromen und Texturen.
-            </p>
-          </div>
-
-          <motion.div
-            variants={container}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-12"
-          >
-            {menuItems.slice(0, 3).map((item, i) => (
-              <motion.div key={item.id} variants={itemAnim}>
-                <Card className="group p-0 overflow-hidden bg-brand-charcoal/40" animate={false}>
-                  <div className="relative h-[450px] overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-cover grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent opacity-60" />
-                    <div className="absolute bottom-8 left-8">
-                      <Badge variant="primary" className="bg-brand-orange text-brand-black font-black text-xs px-4 py-2">
-                        {item.price}
-                      </Badge>
+            <div className="relative perspective-1000 flex justify-center reveal">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px]"></div>
+              <div id="visual-card" className={`flip-card w-full max-w-md cursor-pointer group h-[240px] ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(!isFlipped)}>
+                <div className="flip-card-inner">
+                  <div className="flip-card-front card-bg-front p-8 flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-display font-bold text-2xl text-white tracking-widest">DÖNERHAUS</div>
+                        <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Black Member</div>
+                      </div>
+                      <Wifi className="text-white/20 w-6 h-6 rotate-90" />
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-7 bg-white/10 rounded border border-white/10 flex items-center justify-center overflow-hidden">
+                        <div className="w-full h-[1px] bg-white/20"></div>
+                      </div>
+                      <Zap className="text-white/40 w-4 h-4 fill-white/40" />
+                    </div>
+                    <div>
+                      <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
+                      <div className="font-mono text-2xl text-white tracking-widest text-glow">{user?.membershipCode || '---- ----'}</div>
+                      <div className="flex justify-between items-end mt-4">
+                        <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{user?.name || 'GUEST USER'}</div>
+                        <div className="text-[8px] text-gray-600">VALID THRU 12/99</div>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-10 space-y-4">
-                    <h3 className="text-3xl font-black uppercase tracking-tighter">{item.title}</h3>
-                    <p className="text-brand-white/40 text-sm leading-relaxed font-medium min-h-[60px]">{item.description}</p>
-                    <Button variant="outline" className="w-full mt-4 h-14 group">
-                      Jetzt bestellen <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
+                  <div className="flip-card-back card-bg-back p-8 flex flex-col justify-center items-center text-center relative">
+                    <div className="absolute top-4 left-4 text-xs font-bold opacity-50">SCAN ME</div>
+                    <div className="w-32 h-32 bg-white p-2 rounded mb-4">
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user?.membershipCode || 'Donerhaus'}`} className="w-full h-full object-cover" alt="QR" />
+                    </div>
+                    <div className="font-display font-bold text-4xl mb-2 text-black">{user?.coupons || 0}<span className="text-lg opacity-50">/10</span></div>
+                    <div className="text-xs font-bold uppercase tracking-widest text-black/60">Stamps Collected</div>
                   </div>
-                </Card>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* About Section - Editorial Layout */}
-      <section id="about" className="py-20 md:py-40 bg-brand-charcoal relative overflow-hidden">
-        {/* Background text */}
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-black text-brand-white/[0.02] uppercase tracking-tighter pointer-events-none select-none whitespace-nowrap">
-          Nürnberger Exzellenz
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
-          <div className="lg:col-span-7 relative">
-            <motion.div
-              initial={{ clipPath: 'inset(100% 0 0 0)' }}
-              whileInView={{ clipPath: 'inset(0% 0 0 0)' }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="relative h-[700px] rounded-brand-xl overflow-hidden shadow-2xl"
-            >
-               <Image
-                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop"
-                alt="Restaurant Atmosphere"
-                fill
-                className="object-cover contrast-110"
-              />
-            </motion.div>
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-brand-orange rounded-2xl flex flex-col items-center justify-center p-8 text-brand-black hidden md:flex">
-              <span className="text-6xl font-black leading-none">100%</span>
-              <span className="text-xs font-black uppercase tracking-widest mt-2 text-center">Nur Premium-Zutaten</span>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 space-y-10 relative z-10">
-            <Badge variant="primary">Unsere Philosophie</Badge>
-            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter leading-none">
-              Getrieben von <br/> <span className="text-brand-orange">Leidenschaft.</span>
-            </h2>
-            <div className="space-y-6">
-              <p className="text-xl text-brand-white/70 leading-relaxed font-medium">
-                Wir haben nicht einfach nur einen weiteren Dönerladen gebaut. Wir haben ein Heiligtum für Geschmack geschaffen.
-              </p>
-              <p className="text-lg text-brand-white/40 leading-relaxed font-medium">
-                Jeder Spieß ist ein Meisterwerk der Marinierung. Jede Sauce ist ein unter Verschluss gehaltenes Geheimnis. Wir glauben, dass Street Food den gleichen Respekt verdient wie Fine Dining.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-12 pt-10 border-t border-brand-white/5">
-              <div>
-                <h4 className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-4">Täglich</h4>
-                <p className="text-2xl font-black">Frisches Brot</p>
-              </div>
-              <div>
-                <h4 className="text-sm font-black uppercase tracking-[0.3em] text-brand-orange mb-4">Original</h4>
-                <p className="text-2xl font-black">Familiensauce</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Rewards CTA - Extra Bold */}
-      <section className="py-20 md:py-40 bg-brand-orange relative overflow-hidden group">
-        <div className="absolute inset-0 bg-brand-black opacity-0 group-hover:opacity-5 transition-opacity duration-700" />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 md:gap-20">
-          <div className="text-brand-black space-y-10 max-w-3xl">
-            <h2 className="text-6xl md:text-[140px] font-black uppercase tracking-tighter leading-[0.75]">
-              Elite <br/> <span className="text-brand-white">Club.</span>
-            </h2>
-            <p className="text-2xl lg:text-3xl font-black leading-tight max-w-xl">
-              LOYALITÄT ZAHLT SICH AUS. DER 10. DÖNER GEHT AUF UNS.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              {["Kostenlose Willkommens-Pommes", "Prioritäts-Zugang", "Exklusive Events"].map((f, i) => (
-                <div key={i} className="px-5 py-2 rounded-full border border-brand-black/20 text-[10px] font-black uppercase tracking-widest bg-brand-black/5">
-                  {f}
                 </div>
-              ))}
+              </div>
+              <div className="absolute -bottom-10 text-center w-full">
+                <span className="text-[10px] text-gray-600 uppercase tracking-widest animate-pulse">Click card to flip</span>
+              </div>
             </div>
           </div>
-
-          <Link href="/club/register" className="w-full lg:w-auto">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button size="xl" variant="secondary" className="bg-brand-black text-brand-orange hover:bg-brand-charcoal px-20 py-12 text-4xl rounded-full w-full lg:w-auto shadow-2xl shadow-brand-black/40">
-                Jetzt beitreten
-              </Button>
-            </motion.div>
-          </Link>
         </div>
       </section>
-    </div>
+
+      {/* MENU HIGHLIGHTS */}
+      <section id="menu" className="py-32 bg-obsidian-surface">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8 reveal">
+            <div>
+              <span className="text-gold tracking-[0.4em] text-[10px] font-bold uppercase block mb-4">Signature Collection</span>
+              <h2 className="text-5xl md:text-7xl font-display font-bold text-white uppercase leading-none">
+                Masterpiece <br /> <span className="text-outline">Menu</span>
+              </h2>
+            </div>
+            <p className="text-gray-500 max-w-sm text-sm leading-relaxed">
+              Jedes Gericht ist das Ergebnis monatelanger Experimente mit Aromen und Texturen. Premium-Qualität ohne Kompromisse.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {menuItems.slice(0, 3).map((item, i) => (
+              <div key={item.id} className="reveal group">
+                <div className="relative h-[400px] overflow-hidden rounded-2xl mb-6">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale-[0.5] group-hover:grayscale-0"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-6 left-6">
+                    <div className="px-4 py-1 bg-gold text-black font-bold text-[10px] tracking-widest uppercase rounded-full">
+                      {item.price}
+                    </div>
+                  </div>
+                </div>
+                <h3 className="text-2xl font-display font-bold text-white mb-2 uppercase tracking-tighter">{item.title}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed mb-6 font-medium">{item.description}</p>
+                <Link href="/club/register" className="inline-flex items-center gap-2 text-gold text-[10px] font-bold tracking-widest uppercase hover:gap-4 transition-all cursor-hover">
+                  Jetzt Probieren <ArrowDownRight className="w-3 h-3" />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT SECTION */}
+      <section id="about" className="py-40 bg-obsidian-base relative overflow-hidden">
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[20vw] font-display font-bold text-white/[0.02] uppercase tracking-tighter pointer-events-none select-none whitespace-nowrap">
+          EXCELLENCE
+        </div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="reveal order-2 lg:order-1">
+              <span className="text-gold tracking-[0.4em] text-[10px] font-bold uppercase block mb-6">Our Philosophy</span>
+              <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 leading-tight">
+                Driven by <br /> <span className="text-gold">Passion.</span>
+              </h2>
+              <div className="space-y-6 text-gray-400 text-lg font-light leading-relaxed">
+                <p>Wir haben nicht einfach nur einen weiteren Dönerladen gebaut. Wir haben ein Heiligtum für Geschmack geschaffen.</p>
+                <p>Jeder Spieß ist ein Meisterwerk der Marinierung. Jede Sauce ist ein unter Verschluss gehaltenes Geheimnis. Wir glauben, dass Street Food den gleichen Respekt verdient wie Fine Dining.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-10 mt-12 pt-10 border-t border-white/5">
+                <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-gold mb-2">Daily</h4>
+                  <p className="text-xl font-bold text-white uppercase">Fresh Bread</p>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-gold mb-2">Original</h4>
+                  <p className="text-xl font-bold text-white uppercase">Family Sauce</p>
+                </div>
+              </div>
+            </div>
+            <div className="reveal order-1 lg:order-2">
+              <div className="relative aspect-[4/5] rounded-3xl overflow-hidden glass-panel p-4">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop"
+                    alt="Restaurant"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gold rounded-2xl flex items-center justify-center rotate-6 shadow-2xl">
+                  <span className="text-black font-display font-bold text-3xl">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 30s linear infinite;
+          display: flex;
+          width: fit-content;
+        }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out forwards;
+        }
+      `}</style>
+    </main>
   );
 }

@@ -1,10 +1,12 @@
-'use client'
-
+"use client"
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Lock, ArrowRight } from 'lucide-react'
+import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
+import { Card } from '@/components/ui/Card'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 
 function LoginContent() {
   const [password, setPassword] = useState('')
@@ -30,10 +32,10 @@ function LoginContent() {
         router.push(from)
         router.refresh()
       } else {
-        setError('Ungültiger Code. Bitte versuchen Sie es erneut.')
+        setError('ACCESS DENIED')
       }
     } catch (err) {
-      setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.')
+      setError('SYSTEM ERROR')
     } finally {
       setIsLoading(false)
     }
@@ -41,49 +43,39 @@ function LoginContent() {
 
   return (
     <div className="relative z-10 flex flex-col items-center">
-      <div className="relative w-24 h-24 mb-8">
-        <Image
-          src="/logo.jpg"
-          alt="Dönerhaus Logo"
-          fill
-          className="object-cover rounded-full border border-white/10"
-        />
+      <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-gold/30">
+        <ShieldCheck className="w-10 h-10 text-gold" />
       </div>
 
-      <h1 className="text-2xl font-bold text-[#F2F2F2] mb-2 text-center">Geschützter Zugang</h1>
-      <p className="text-[#F2F2F2]/60 text-sm mb-8 text-center">Geben Sie Ihren Zugangs-Code ein, um fortzufahren</p>
+      <h1 className="font-display text-2xl font-bold text-white mb-2 text-center uppercase tracking-widest">System Access</h1>
+      <p className="text-gray-500 text-[10px] mb-8 text-center uppercase tracking-[0.3em]">Authorized Access Only</p>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-4">
+      <form onSubmit={handleSubmit} className="w-full space-y-6">
         <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E67E22] w-5 h-5" />
-          <input
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gold w-4 h-4" />
+          <Input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Zugangs-Code"
-            className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl py-4 pl-12 pr-4 text-[#F2F2F2] focus:outline-none focus:ring-2 focus:ring-[#E67E22]/50 transition-all placeholder:text-white/20"
+            placeholder="ACCESS KEY"
+            className="pl-12"
             required
           />
         </div>
 
         {error && (
-          <p className="text-red-500 text-xs mt-2 text-center">{error}</p>
+          <p className="text-red-500 text-[10px] mt-2 text-center font-mono animate-pulse uppercase tracking-widest">{error}</p>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-[#E67E22] hover:bg-[#FF8C1A] text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_20px_rgba(230,126,34,0.3)]"
+          variant="primary"
+          size="lg"
+          className="w-full"
         >
-          {isLoading ? (
-            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <>
-              Anmelden
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </>
-          )}
-        </button>
+          {isLoading ? 'AUTHENTICATING...' : 'ENTER'}
+        </Button>
       </form>
     </div>
   )
@@ -91,16 +83,18 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-[#0F0F0F] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-obsidian-base flex items-center justify-center p-6 relative overflow-hidden">
+       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-[#141414] rounded-2xl border border-white/5 p-8 shadow-2xl relative overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-md"
       >
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#E67E22]/10 blur-3xl rounded-full -mr-16 -mt-16" />
-        <Suspense fallback={<div className="flex justify-center p-12"><div className="w-8 h-8 border-4 border-[#E67E22]/20 border-t-[#E67E22] rounded-full animate-spin" /></div>}>
-          <LoginContent />
-        </Suspense>
+        <Card className="p-10 shadow-2xl">
+          <Suspense fallback={<div className="flex justify-center p-12"><div className="w-8 h-8 border-2 border-gold/20 border-t-gold rounded-full animate-spin" /></div>}>
+            <LoginContent />
+          </Suspense>
+        </Card>
       </motion.div>
     </div>
   )

@@ -3,16 +3,16 @@ import { test, expect } from '@playwright/test';
 const BASE_URL = 'http://localhost:3000';
 
 test.describe('Dönerhaus Nürnberg Premium Features', () => {
-  test('Landing page shows Awards section', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto(BASE_URL);
+    // Wait for preloader to finish
+    await page.waitForSelector('#loader', { state: 'hidden', timeout: 10000 });
+  });
 
-    // Check for the awards section title
-    const awardsTitle = page.getByText('Einer der Besten in Nürnberg');
-    await expect(awardsTitle).toBeVisible();
-
-    // Check for the link to the article
-    const articleLink = page.getByRole('link', { name: 'Artikel lesen' });
-    await expect(articleLink).toHaveAttribute('href', 'https://deinnaemberch.de/die-6-besten-doener-in-nuernberg/');
+  test('Landing page shows Hero section', async ({ page }) => {
+    // Check for the Hero text - use regex to be case insensitive and handle potential wrapping
+    await expect(page.getByText(/Kebab/i)).toBeVisible();
+    await expect(page.getByText(/Defined/i)).toBeVisible();
   });
 
   test('Club registration success shows VIP card and action buttons', async ({ page }) => {
@@ -21,28 +21,28 @@ test.describe('Dönerhaus Nürnberg Premium Features', () => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ membershipCode: '123456' }),
+        body: JSON.stringify({ membershipCode: '123456', name: 'Test User' }),
       });
     });
 
     await page.goto(`${BASE_URL}/club/register`);
+    await page.waitForSelector('#loader', { state: 'hidden', timeout: 10000 });
 
     // Fill the form
-    await page.getByPlaceholder('z.B. Max Mustermann').fill('Test User');
-    await page.getByPlaceholder('+49 123 4567890').fill('+4917612345678');
-    await page.getByRole('button', { name: 'Jetzt registrieren' }).click();
+    await page.locator('input[placeholder*="Mustermann"]').fill('Test User');
+    await page.locator('input[placeholder*="49"]').fill('+4917612345678');
+    await page.getByRole('button', { name: /REGISTER NOW/i }).click();
 
-    // Verify success state
-    await expect(page.getByText('Privileg aktiviert.')).toBeVisible();
+    // Verify success state (it's in the Card display now)
+    await expect(page.getByText(/Willkommen/i)).toBeVisible();
 
-    // Check for VIP Card elements - use exact to avoid ambiguity with footer
-    await expect(page.getByText('Dönerhaus Nürnberg', { exact: true })).toBeVisible();
-    await expect(page.getByText('123456')).toBeVisible();
-    await expect(page.getByText('Test User')).toBeVisible();
+    // Check for VIP Card elements
+    await expect(page.getByText(/123456/)).toBeVisible();
+    await expect(page.getByText(/Test User/i)).toBeVisible();
 
     // Check for Action Buttons
-    await expect(page.getByText('Als Bild speichern')).toBeVisible();
-    await expect(page.getByText('Karte Drucken')).toBeVisible();
-    await expect(page.getByText('Code kopieren')).toBeVisible();
+    await expect(page.getByText('Save as Image')).toBeVisible();
+    await expect(page.getByText('Print Card')).toBeVisible();
+    await expect(page.getByText('Copy Code')).toBeVisible();
   });
 });
