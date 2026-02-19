@@ -4,6 +4,9 @@ import { gsap } from 'gsap'
 
 export const CustomCursor = () => {
   useEffect(() => {
+    // Disable on touch devices
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
     const cursor = document.getElementById('cursor')
     if (!cursor) return
 

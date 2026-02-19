@@ -64,7 +64,7 @@ export default function ConnectPage() {
             </Card>
           </Link>
 
-          <Link href="https://instagram.com" target="_blank" className="block group">
+          <Link href="https://www.instagram.com/doenerhaus_nuernberg?igsh=eGdybHloajNlM3Fp" target="_blank" className="block group">
             <Card className="p-6 flex items-center justify-between hover:bg-white hover:text-black transition-all group cursor-pointer border-white/10">
               <div className="flex items-center gap-4">
                 <Instagram className="w-5 h-5 text-gold group-hover:text-black transition-colors" />
