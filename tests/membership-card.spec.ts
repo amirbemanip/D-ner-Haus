@@ -42,7 +42,7 @@ test.describe('Dönerhaus Nürnberg Premium Features', () => {
 
     // Check for Action Buttons
     await expect(page.getByText('Save as Image')).toBeVisible();
-    await expect(page.getByText('Print Card')).toBeVisible();
+    await expect(page.getByText(/Print/i)).toBeVisible();
     await expect(page.getByText('Copy Code')).toBeVisible();
   });
 });

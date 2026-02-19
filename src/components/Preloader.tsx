@@ -12,14 +12,14 @@ export const Preloader = () => {
     const timer = setTimeout(() => {
       gsap.to('#loader', {
         y: '-100%',
-        duration: 1.2,
+        duration: 0.8,
         ease: 'power4.inOut',
         onComplete: () => {
           const loader = document.getElementById('loader')
           if (loader) loader.style.display = 'none'
         }
       })
-    }, 1800)
+    }, 800)
 
     return () => clearTimeout(timer)
   }, [])

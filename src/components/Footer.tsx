@@ -15,7 +15,7 @@ export const Footer = () => {
           <div className="text-[9px] text-gray-500 mt-2 uppercase tracking-widest">© 2026 Nürnberg. All Rights Reserved.</div>
         </div>
         <div className="flex gap-6">
-          <a href="#" className="text-gray-500 hover:text-gold transition-colors cursor-hover">
+          <a href="https://www.instagram.com/doenerhaus_nuernberg?igsh=eGdybHloajNlM3Fp" target="_blank" className="text-gray-500 hover:text-gold transition-colors cursor-hover">
             <Instagram className="w-5 h-5" />
           </a>
           <a href="#" className="text-gray-500 hover:text-gold transition-colors cursor-hover">

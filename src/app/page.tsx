@@ -15,7 +15,7 @@ export default function Home() {
   const [formData, setFormData] = useState({ name: '', phone: '' });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     // Hero Animations
@@ -51,6 +51,7 @@ export default function Home() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
@@ -60,12 +61,11 @@ export default function Home() {
       const data = await res.json();
       if (res.ok || data.membershipCode) {
         setUser(data.membershipCode ? data : { ...data, name: formData.name });
-        setTimeout(() => setIsFlipped(true), 500);
       } else {
-        alert(data.error);
+        setError(data.error || 'Ein Fehler ist aufgetreten');
       }
     } catch (err) {
-      alert('Network error');
+      setError('Verbindung zum Server fehlgeschlagen');
     } finally {
       setLoading(false);
     }
@@ -75,30 +75,30 @@ export default function Home() {
     <main className="bg-obsidian-base overflow-x-hidden">
 
       {/* HERO SECTION */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] bg-gold/20 rounded-full blur-[150px] animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] md:w-[60vw] h-[80vw] md:h-[60vw] bg-gold/20 rounded-full blur-[100px] md:blur-[150px] animate-pulse-slow"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10 text-center">
+        <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
           <div className="inline-block overflow-hidden mb-4">
-            <div className="text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
+            <div className="text-[10px] md:text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
           </div>
 
-          <h1 className="font-display font-bold text-[clamp(4rem,10vw,12rem)] leading-[0.85] uppercase mb-8 mix-blend-overlay">
+          <h1 className="font-display font-bold text-[clamp(3rem,15vw,12rem)] leading-[0.85] uppercase mb-8 mix-blend-overlay">
             <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
             <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
             <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
           </h1>
 
-          <div className="max-w-xl mx-auto mb-12">
-            <p className="text-gray-400 font-sans text-lg leading-relaxed hero-reveal opacity-0">
+          <div className="max-w-xl mx-auto mb-12 px-4">
+            <p className="text-gray-400 font-sans text-sm md:text-lg leading-relaxed hero-reveal opacity-0">
               Kein Fast Food. Ein Statement. <br />
               Frische Zutaten, exklusive Rezepturen und das Herz von Nürnberg.
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-center gap-6 hero-reveal opacity-0">
+          <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 hero-reveal opacity-0">
             <Link href="#club" className="btn-magnetic px-10 py-4 border border-white/20 rounded-full text-xs font-bold tracking-[0.2em] hover:text-black cursor-hover inline-flex items-center justify-center group">
               <span>JOIN THE CLUB</span>
               <ArrowRight className="ml-3 w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform" />
@@ -179,7 +179,8 @@ export default function Home() {
                           placeholder="017..."
                         />
                       </div>
-                      <Button type="submit" disabled={loading} variant="gold" size="lg" className="w-full mt-4">
+                      {error && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest mb-4">{error}</p>}
+                      <Button type="submit" disabled={loading} variant="gold" size="lg" className="w-full">
                         {loading ? 'PROCESSING...' : 'JOIN NOW & GET FREE FRIES'}
                       </Button>
                     </form>
@@ -194,45 +195,46 @@ export default function Home() {
               )}
             </div>
 
-            <div className="relative perspective-1000 flex justify-center reveal">
+            <div className="relative flex justify-center reveal">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px]"></div>
-              <div id="visual-card" className={`flip-card w-full max-w-md cursor-pointer group h-[240px] ${isFlipped ? 'flipped' : ''}`} onClick={() => setIsFlipped(!isFlipped)}>
-                <div className="flip-card-inner">
-                  <div className="flip-card-front card-bg-front p-8 flex flex-col justify-between">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-display font-bold text-2xl text-white tracking-widest">DÖNERHAUS</div>
-                        <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Black Member</div>
-                      </div>
-                      <Wifi className="text-white/20 w-6 h-6 rotate-90" />
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-7 bg-white/10 rounded border border-white/10 flex items-center justify-center overflow-hidden">
-                        <div className="w-full h-[1px] bg-white/20"></div>
-                      </div>
-                      <Zap className="text-white/40 w-4 h-4 fill-white/40" />
-                    </div>
-                    <div>
-                      <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
-                      <div className="font-mono text-2xl text-white tracking-widest text-glow">{user?.membershipCode || '---- ----'}</div>
-                      <div className="flex justify-between items-end mt-4">
-                        <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{user?.name || 'GUEST USER'}</div>
-                        <div className="text-[8px] text-gray-600">VALID THRU 12/99</div>
-                      </div>
-                    </div>
+              <div id="visual-card" className="w-full max-w-md h-[260px] card-bg-front p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
+                {/* Decorative Elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
+
+                <div className="flex justify-between items-start relative z-10">
+                  <div>
+                    <div className="font-display font-bold text-2xl text-white tracking-widest uppercase">Dönerhaus</div>
+                    <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Black Member</div>
                   </div>
-                  <div className="flip-card-back card-bg-back p-8 flex flex-col justify-center items-center text-center relative">
-                    <div className="absolute top-4 left-4 text-xs font-bold opacity-50">SCAN ME</div>
-                    <div className="w-32 h-32 bg-white p-2 rounded mb-4">
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="w-20 h-20 bg-white p-1.5 rounded-lg shadow-xl">
                       <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user?.membershipCode || 'Donerhaus'}`} className="w-full h-full object-cover" alt="QR" />
                     </div>
-                    <div className="font-display font-bold text-4xl mb-2 text-black">{user?.coupons || 0}<span className="text-lg opacity-50">/10</span></div>
-                    <div className="text-xs font-bold uppercase tracking-widest text-black/60">Stamps Collected</div>
+                    <Wifi className="text-white/20 w-4 h-4 rotate-90" />
                   </div>
                 </div>
-              </div>
-              <div className="absolute -bottom-10 text-center w-full">
-                <span className="text-[10px] text-gray-600 uppercase tracking-widest animate-pulse">Click card to flip</span>
+
+                <div className="flex items-center gap-4 relative z-10">
+                  <Zap className="text-white/40 w-4 h-4 fill-white/40" />
+                  <div className="px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
+                    <span className="text-[8px] font-bold text-gold uppercase tracking-[0.2em]">10 Stamps = 1 Free Döner</span>
+                  </div>
+                </div>
+
+                <div className="relative z-10">
+                  <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
+                  <div className="font-mono text-2xl text-white tracking-widest text-glow mb-4">{user?.membershipCode || '---- ----'}</div>
+                  <div className="flex justify-between items-end border-t border-white/5 pt-4">
+                    <div>
+                      <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Member Name</div>
+                      <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{user?.name || 'GUEST USER'}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Stamps</div>
+                      <div className="text-white font-bold text-lg">{user?.coupons || 0}<span className="text-gray-600 text-xs ml-1">/ 10</span></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
