@@ -75,9 +75,9 @@ export default function Home() {
     <main className="bg-obsidian-base overflow-x-hidden">
 
       {/* HERO SECTION */}
-      <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-20">
+      <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16 md:pt-20">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[60vw] h-[90vw] md:h-[60vw] bg-gold/20 rounded-full blur-[80px] md:blur-[150px] animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[60vw] h-[90vw] md:h-[60vw] bg-gold/20 rounded-full blur-[60px] md:blur-[150px] animate-pulse-slow"></div>
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
@@ -190,48 +190,59 @@ export default function Home() {
                 <div className="flex flex-col items-start animate-fade-in">
                   <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
                   <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
+                  <div className="flex flex-wrap gap-4 mb-8">
+                    <Button
+                      onClick={() => window.location.href = `/api/wallet?code=${user.membershipCode}&name=${encodeURIComponent(user.name)}`}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full border-white/10"
+                    >
+                      <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
+                      Apple Wallet
+                    </Button>
+                  </div>
                   <button onClick={() => setUser(null)} className="text-xs text-gray-600 hover:text-white underline cursor-hover">Neuen Account erstellen</button>
                 </div>
               )}
             </div>
 
-            <div className="relative flex justify-center reveal mt-12 lg:mt-0">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px]"></div>
-              <div id="visual-card" className="w-full max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-6 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
+            <div className="relative flex justify-center reveal mt-8 lg:mt-0 w-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[60px] md:blur-[80px]"></div>
+              <div id="visual-card" className="w-full max-w-[340px] md:max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
 
                 <div className="flex justify-between items-start relative z-10">
                   <div>
-                    <div className="font-display font-bold text-2xl text-white tracking-widest uppercase">Dönerhaus</div>
+                    <div className="font-display font-bold text-lg md:text-2xl text-white tracking-widest uppercase leading-tight">Dönerhaus</div>
                     <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Black Member</div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
-                    <div className="w-20 h-20 bg-white p-1.5 rounded-lg shadow-xl">
+                    <div className="w-16 h-16 md:w-20 md:h-20 bg-white p-1.5 rounded-lg shadow-xl">
                       <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${user?.membershipCode || 'Donerhaus'}`} className="w-full h-full object-cover" alt="QR" />
                     </div>
                     <Wifi className="text-white/20 w-4 h-4 rotate-90" />
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 relative z-10">
-                  <Zap className="text-white/40 w-4 h-4 fill-white/40" />
-                  <div className="px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
-                    <span className="text-[8px] font-bold text-gold uppercase tracking-[0.2em]">10 Stamps = 1 Free Döner</span>
+                <div className="flex items-center gap-3 md:gap-4 relative z-10">
+                  <Zap className="text-white/40 w-3 h-3 md:w-4 md:h-4 fill-white/40" />
+                  <div className="px-2 md:px-3 py-1 bg-gold/10 border border-gold/20 rounded-full">
+                    <span className="text-[7px] md:text-[8px] font-bold text-gold uppercase tracking-[0.2em]">10 Stamps = 1 Free Döner</span>
                   </div>
                 </div>
 
                 <div className="relative z-10">
-                  <div className="text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
-                  <div className="font-mono text-2xl text-white tracking-widest text-glow mb-4">{user?.membershipCode || '---- ----'}</div>
-                  <div className="flex justify-between items-end border-t border-white/5 pt-4">
+                  <div className="text-[8px] md:text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
+                  <div className="font-mono text-xl md:text-2xl text-white tracking-widest text-glow mb-2 md:mb-4">{user?.membershipCode || '---- ----'}</div>
+                  <div className="flex justify-between items-end border-t border-white/5 pt-3 md:pt-4">
                     <div>
                       <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Member Name</div>
-                      <div className="font-display text-sm text-gray-300 uppercase tracking-wider">{user?.name || 'GUEST USER'}</div>
+                      <div className="font-display text-[10px] md:text-sm text-gray-300 uppercase tracking-wider truncate max-w-[120px] md:max-w-none">{user?.name || 'GUEST USER'}</div>
                     </div>
                     <div className="text-right">
                       <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Stamps</div>
-                      <div className="text-white font-bold text-lg">{user?.coupons || 0}<span className="text-gray-600 text-xs ml-1">/ 10</span></div>
+                      <div className="text-white font-bold text-md md:text-lg">{user?.coupons || 0}<span className="text-gray-600 text-xs ml-1">/ 10</span></div>
                     </div>
                   </div>
                 </div>
