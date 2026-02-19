@@ -16,6 +16,36 @@ export default function SellerPage() {
   const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
 
+  const handleSearchWithCode = React.useCallback(async (searchCode: string) => {
+    if (!searchCode) return;
+    setLoading(true);
+    setError('');
+    setMessage('');
+    setCustomer(null);
+
+    try {
+      const res = await fetch(`/api/customer/${searchCode}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setCustomer(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const onScanSuccess = React.useCallback((decodedText: string) => {
+    setCode(decodedText);
+    setIsScanning(false);
+    // Trigger search with the scanned code
+    handleSearchWithCode(decodedText);
+  }, [handleSearchWithCode]);
+
+  const onScanFailure = React.useCallback((error: any) => {
+    // console.warn(`Code scan error = ${error}`);
+  }, []);
+
   useEffect(() => {
     if (isScanning) {
       scannerRef.current = new Html5QrcodeScanner(
@@ -36,37 +66,7 @@ export default function SellerPage() {
         scannerRef.current.clear().catch(error => console.error("Failed to clear scanner", error));
       }
     };
-  }, [isScanning]);
-
-  function onScanSuccess(decodedText: string) {
-    setCode(decodedText);
-    setIsScanning(false);
-    // Trigger search with the scanned code
-    handleSearchWithCode(decodedText);
-  }
-
-  function onScanFailure(error: any) {
-    // console.warn(`Code scan error = ${error}`);
-  }
-
-  const handleSearchWithCode = async (searchCode: string) => {
-    if (!searchCode) return;
-    setLoading(true);
-    setError('');
-    setMessage('');
-    setCustomer(null);
-
-    try {
-      const res = await fetch(`/api/customer/${searchCode}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setCustomer(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isScanning, onScanSuccess, onScanFailure]);
 
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
