@@ -14,7 +14,7 @@ export async function GET(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.WALLETWALLET_API_KEY || 'ww_live_12edf7cd29beb42dcad8ff5596a07adf'}`,
+        'Authorization': `Bearer ${process.env.WALLETWALLET_API_KEY}`,
       },
       body: JSON.stringify({
         barcodeValue: code,

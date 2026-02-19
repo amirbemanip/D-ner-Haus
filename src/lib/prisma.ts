@@ -37,6 +37,11 @@ const createRecursiveProxy = (name: string = '', model: string = '') => {
       }
 
       if (action === 'create') {
+        const existing = customers.find(c => c.phone === data.data.phone);
+        if (existing) {
+          return Promise.reject(new Error('P2002: Unique constraint failed on the fields: (`phone`)'));
+        }
+
         const newCustomer = {
           id: `demo-${Math.random().toString(36).substr(2, 9)}`,
           ...data.data,

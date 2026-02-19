@@ -85,11 +85,25 @@ export default function Home() {
             <div className="text-[10px] md:text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
           </div>
 
-          <h1 className="font-display font-bold text-[clamp(2.5rem,15vw,12rem)] leading-[0.85] uppercase mb-6 md:mb-8 mix-blend-overlay">
-            <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
-            <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
-            <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
-          </h1>
+          <div className="relative inline-block w-full">
+            {/* Background Hero Logo */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none hero-reveal opacity-0 select-none">
+              <div className="relative w-full aspect-[2/1] max-w-4xl opacity-[0.03] grayscale contrast-125 blur-[2px] transform scale-125">
+                <Image
+                  src="/logo.jpg"
+                  alt=""
+                  fill
+                  className="object-contain rounded-full"
+                />
+              </div>
+            </div>
+
+            <h1 className="relative z-10 font-display font-bold text-[clamp(2.5rem,15vw,12rem)] leading-[0.85] uppercase mb-6 md:mb-8 mix-blend-overlay">
+              <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
+              <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
+              <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
+            </h1>
+          </div>
 
           <div className="max-w-xl mx-auto mb-12 px-4">
             <p className="text-gray-400 font-sans text-sm md:text-lg leading-relaxed hero-reveal opacity-0">
