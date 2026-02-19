@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client'
 
 // In-memory store for demo mode
 let customers: any[] = [];
+let globalMessage = "";
+let groupMessages: Record<string, string> = {}; // { groupId: message }
 
 // Recursive proxy to handle any level of nesting (e.g., prisma.customer.findUnique)
 const createRecursiveProxy = (name: string = '', model: string = '') => {
@@ -10,7 +12,10 @@ const createRecursiveProxy = (name: string = '', model: string = '') => {
       if (prop === 'then') return undefined;
       if (prop === 'catch') return undefined;
       if (typeof prop === 'string') {
-        // If we're at the top level (prisma.customer), we start tracking the model name
+        // Handle custom metadata for messages
+        if (prop === 'getGlobalMessage') return () => Promise.resolve(globalMessage);
+        if (prop === 'setGlobalMessage') return (msg: string) => { globalMessage = msg; return Promise.resolve(msg); };
+
         return createRecursiveProxy(prop, model || (['customer'].includes(prop.toLowerCase()) ? prop : ''));
       }
       return undefined;
@@ -33,7 +38,12 @@ const createRecursiveProxy = (name: string = '', model: string = '') => {
           if (where.id && c.id === where.id) return true;
           return false;
         });
-        return Promise.resolve(customer || null);
+
+        if (customer) {
+            // Append global message to the customer object for easy access
+            return Promise.resolve({ ...customer, globalMessage });
+        }
+        return Promise.resolve(null);
       }
 
       if (action === 'create') {
@@ -48,6 +58,8 @@ const createRecursiveProxy = (name: string = '', model: string = '') => {
           stamps: 0,
           coupons: 0,
           receivedFirstGift: false,
+          googleReviewPending: false,
+          googleReviewClaimed: false,
           createdAt: new Date(),
           updatedAt: new Date(),
         };

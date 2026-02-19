@@ -60,6 +60,18 @@ export async function PATCH(
         return NextResponse.json({ error: 'Willkommensgeschenk bereits erhalten' }, { status: 400 })
       }
       updateData.receivedFirstGift = true
+    } else if (action === 'claim_review') {
+      if (customer.googleReviewClaimed || customer.googleReviewPending) {
+        return NextResponse.json({ error: 'Bereits eingereicht' }, { status: 400 })
+      }
+      updateData.googleReviewPending = true
+    } else if (action === 'approve_review') {
+      if (!customer.googleReviewPending) {
+        return NextResponse.json({ error: 'Keine ausstehende Bewertung' }, { status: 400 })
+      }
+      updateData.googleReviewPending = false
+      updateData.googleReviewClaimed = true
+      updateData.coupons = customer.coupons + 1
     } else {
       return NextResponse.json({ error: 'Ungültige Aktion' }, { status: 400 })
     }
