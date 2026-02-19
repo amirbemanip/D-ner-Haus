@@ -75,9 +75,9 @@ export default function Home() {
     <main className="bg-obsidian-base overflow-x-hidden">
 
       {/* HERO SECTION */}
-      <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden pt-20">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] md:w-[60vw] h-[80vw] md:h-[60vw] bg-gold/20 rounded-full blur-[100px] md:blur-[150px] animate-pulse-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] md:w-[60vw] h-[90vw] md:h-[60vw] bg-gold/20 rounded-full blur-[80px] md:blur-[150px] animate-pulse-slow"></div>
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
@@ -85,7 +85,7 @@ export default function Home() {
             <div className="text-[10px] md:text-xs font-bold tracking-[0.4em] text-gold uppercase hero-reveal">Taste the Excellence</div>
           </div>
 
-          <h1 className="font-display font-bold text-[clamp(3rem,15vw,12rem)] leading-[0.85] uppercase mb-8 mix-blend-overlay">
+          <h1 className="font-display font-bold text-[clamp(2.5rem,15vw,12rem)] leading-[0.85] uppercase mb-6 md:mb-8 mix-blend-overlay">
             <div className="overflow-hidden"><span className="block hero-reveal">Kebab</span></div>
             <div className="overflow-hidden"><span className="block text-outline hero-reveal">Re</span></div>
             <div className="overflow-hidden"><span className="block text-gold text-glow hero-reveal">Defined</span></div>
@@ -139,12 +139,12 @@ export default function Home() {
       </div>
 
       {/* LOYALTY SECTION */}
-      <section id="club" className="py-32 relative">
+      <section id="club" className="py-20 md:py-32 relative">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 md:gap-20 items-center">
             <div className="reveal">
               <span className="text-gold tracking-[0.4em] text-[10px] font-bold uppercase block mb-6">Exclusive Access</span>
-              <h2 className="text-5xl md:text-7xl font-display font-bold text-white mb-8 leading-tight">
+              <h2 className="text-4xl md:text-7xl font-display font-bold text-white mb-6 md:mb-8 leading-tight">
                 BLACK <br /> <span className="text-outline">MEMBER</span>
               </h2>
               <p className="text-gray-400 text-lg mb-12 font-light">
@@ -195,9 +195,9 @@ export default function Home() {
               )}
             </div>
 
-            <div className="relative flex justify-center reveal">
+            <div className="relative flex justify-center reveal mt-12 lg:mt-0">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[80px]"></div>
-              <div id="visual-card" className="w-full max-w-md h-[260px] card-bg-front p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
+              <div id="visual-card" className="w-full max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-6 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
 
