@@ -13,7 +13,7 @@ export const menuItems: MenuItem[] = [
     title: 'Klassischer Döner',
     price: '€7.50',
     description: 'Traditioneller Kalbsdöner mit frischem Salat und unserer hausgemachten Knoblauchsauce in geröstetem Brot.',
-    image: '/pics/classic.jpg',
+    image: '/pics/1.webp',
     category: 'doner'
   },
   {
@@ -21,7 +21,15 @@ export const menuItems: MenuItem[] = [
     title: 'Hähnchen Döner',
     price: '€7.00',
     description: 'Marinierte Hähnchenbrust, dünn geschnitten, serviert mit pikanter Joghurtsauce und gemischtem Salat.',
-    image: '/pics/chicken.jpg',
+    image: '/pics/2.webp',
+    category: 'doner'
+  },
+  {
+    id: 'doner-plate',
+    title: 'Döner Teller',
+    price: '€12.50',
+    description: 'Saftiges Dönerfleisch serviert mit knusprigen Pommes, frischem Salat und hausgemachten Saucen.',
+    image: '/pics/3.webp',
     category: 'doner'
   },
   {
@@ -29,22 +37,30 @@ export const menuItems: MenuItem[] = [
     title: 'Vegetarischer Döner',
     price: '€6.50',
     description: 'Knusprige Falafel oder gegrilltes Gemüse mit Hummus und frischem Salat in unserem handwerklichen Brot.',
-    image: '/pics/veggie.jpg',
+    image: '/pics/4.webp',
     category: 'doner'
   },
   {
-    id: 'fries',
-    title: 'Signature Pommes',
-    price: '€4.50',
-    description: 'Goldbraun knusprige Pommes, gewürzt mit unserer hauseigenen Gewürzmischung.',
-    image: '/pics/fries.jpg',
+    id: 'doner-sandwich',
+    title: 'Döner Sandwich',
+    price: '€8.00',
+    description: 'Extra Fleisch und viel Sauce in einem besonders knusprig getoasteten Sandwich-Brot.',
+    image: '/pics/5.webp',
+    category: 'doner'
+  },
+  {
+    id: 'salad-mix',
+    title: 'Frischer Salat Mix',
+    price: '€5.50',
+    description: 'Täglich frisch zubereitete Salate mit feinstem Dressing nach Hausart.',
+    image: '/pics/6.webp',
     category: 'side'
   },
   {
-    id: 'drinks',
-    title: 'Kalte Getränke',
-    price: '€3.00',
-    description: 'Auswahl an erfrischenden Softdrinks, Ayran und Mineralwasser.',
+    id: 'drinks-ayran',
+    title: 'Frischer Ayran',
+    price: '€2.50',
+    description: 'Die perfekte Erfrischung zu jedem Döner.',
     image: '/pics/drinks.jpg',
     category: 'drink'
   }

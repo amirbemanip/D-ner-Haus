@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight } from 'lucide-react';
+import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight, Download, Printer, Copy, Check } from 'lucide-react';
+import { toPng } from 'html-to-image';
 import { menuItems } from '@/data/menu';
 import { Button } from '@/components/ui/Button';
 
@@ -12,10 +13,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({ name: '', phone: '' });
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // Hero Animations
@@ -69,6 +72,31 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleWalletDownload = () => {
+    if (!user?.membershipCode) return;
+    window.location.href = `/api/wallet?code=${user.membershipCode}&name=${encodeURIComponent(user.name)}`;
+  };
+
+  const handleDownload = async () => {
+    if (cardRef.current === null) return;
+    try {
+      const dataUrl = await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 });
+      const link = document.createElement('a');
+      link.download = `donerhaus-vip-card-${user?.membershipCode}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('oops, something went wrong!', err);
+    }
+  };
+
+  const handleCopy = () => {
+    if (!user?.membershipCode) return;
+    navigator.clipboard.writeText(user.membershipCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -192,13 +220,37 @@ export default function Home() {
                   <p className="text-sm text-gray-500 mb-8 max-w-sm">Das ist dein digitaler Mitgliedsausweis. Zeige diesen Code bei jedem Besuch vor.</p>
                   <div className="flex flex-wrap gap-4 mb-8">
                     <Button
-                      onClick={() => window.location.href = `/api/wallet?code=${user.membershipCode}&name=${encodeURIComponent(user.name)}`}
+                      onClick={handleCopy}
                       variant="outline"
                       size="sm"
-                      className="rounded-full border-white/10"
+                      className="rounded-full border-white/10 text-[10px]"
+                    >
+                      {copied ? 'Copied!' : 'Copy Code'}
+                    </Button>
+                    <Button
+                      onClick={handleDownload}
+                      variant="gold"
+                      size="sm"
+                      className="rounded-full text-[10px]"
+                    >
+                      <Download className="w-3 h-3 mr-2" /> Save as Image
+                    </Button>
+                    <Button
+                      onClick={handleWalletDownload}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full border-white/10 text-[10px]"
                     >
                       <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.06 1.92-3.72 1.92-1.61 0-2.14-1.01-4.07-1.01-1.93 0-2.52 1-4.02 1.01-1.58.01-2.82-1.12-3.8-2.55C.44 18.23-1.08 15.42.98 11.75c1.02-1.8 2.86-2.95 4.84-2.95 1.5 0 2.92.95 3.83.95.9 0 2.64-1.15 4.45-1.15 1.61 0 3.01.6 4.02 1.81-3.32 1.76-2.77 6.44.82 7.89-.66 1.76-1.55 3.5-2.89 4.98zM13.03 6.94c.94-1.14 1.57-2.72 1.39-4.3-1.4.06-3.11.95-4.11 2.11-1 1.14-1.88 2.82-1.66 4.3 1.56.12 3.16-.86 4.38-2.11z"/></svg>
                       Apple Wallet
+                    </Button>
+                    <Button
+                      onClick={() => window.print()}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full border-white/10 text-[10px]"
+                    >
+                      <Printer className="w-3 h-3 mr-2" /> Print
                     </Button>
                   </div>
                   <button onClick={() => setUser(null)} className="text-xs text-gray-600 hover:text-white underline cursor-hover">Neuen Account erstellen</button>
@@ -208,14 +260,14 @@ export default function Home() {
 
             <div className="relative flex justify-center reveal mt-8 lg:mt-0 w-full overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-gold/10 rounded-full blur-[60px] md:blur-[80px]"></div>
-              <div id="visual-card" className="w-full max-w-[340px] md:max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
+              <div ref={cardRef} id="visual-card" className="w-full max-w-[340px] md:max-w-md aspect-[1.6/1] md:h-[260px] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden shadow-2xl">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
 
                 <div className="flex justify-between items-start relative z-10">
                   <div>
-                    <div className="font-display font-bold text-lg md:text-2xl text-white tracking-widest uppercase leading-tight">Dönerhaus</div>
-                    <div className="text-[8px] uppercase tracking-[0.3em] text-gold mt-1">Black Member</div>
+                    <div className="font-display font-bold text-lg md:text-2xl text-white tracking-widest uppercase leading-tight">DÖNERHAUS</div>
+                    <div className="text-[9px] md:text-[10px] uppercase tracking-[0.3em] text-gold mt-1 font-bold">Elite Member</div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <div className="w-16 h-16 md:w-20 md:h-20 bg-white p-1.5 rounded-lg shadow-xl">
@@ -233,8 +285,8 @@ export default function Home() {
                 </div>
 
                 <div className="relative z-10">
-                  <div className="text-[8px] md:text-[9px] uppercase tracking-widest text-gray-500 mb-1">Membership ID</div>
-                  <div className="font-mono text-xl md:text-2xl text-white tracking-widest text-glow mb-2 md:mb-4">{user?.membershipCode || '---- ----'}</div>
+                  <div className="text-[8px] md:text-[9px] uppercase tracking-widest text-gray-500 mb-1 font-bold">Membership ID</div>
+                  <div className="font-mono text-xl md:text-3xl text-white tracking-widest text-glow mb-2 md:mb-4">{user?.membershipCode || '---- ----'}</div>
                   <div className="flex justify-between items-end border-t border-white/5 pt-3 md:pt-4">
                     <div>
                       <div className="text-[8px] uppercase tracking-widest text-gray-500 mb-1">Member Name</div>
@@ -326,8 +378,8 @@ export default function Home() {
               <div className="relative aspect-[4/5] rounded-3xl overflow-hidden glass-panel p-4">
                 <div className="relative w-full h-full rounded-2xl overflow-hidden">
                   <Image
-                    src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1000&auto=format&fit=crop"
-                    alt="Restaurant"
+                    src="/pics/7.webp"
+                    alt="Restaurant Storefront"
                     fill
                     className="object-cover"
                   />

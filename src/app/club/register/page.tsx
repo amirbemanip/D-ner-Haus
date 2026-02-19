@@ -163,7 +163,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="relative flex justify-center mb-12 w-full overflow-hidden">
-                <div ref={cardRef} className="w-full max-w-[340px] md:max-w-[400px] aspect-[1.6/1] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden group shadow-2xl">
+                <div ref={cardRef} id="visual-card" className="w-full max-w-[340px] md:max-w-[400px] aspect-[1.6/1] card-bg-front p-5 md:p-8 flex flex-col justify-between text-left relative overflow-hidden group shadow-2xl">
                   {/* Decorative Elements */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
 

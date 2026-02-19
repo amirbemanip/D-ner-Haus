@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { gsap } from 'gsap'
 
 export const Preloader = () => {
@@ -29,7 +30,16 @@ export const Preloader = () => {
       id="loader"
       className="fixed inset-0 z-[99999] bg-[#030303] flex items-center justify-center"
     >
-      <div className="text-center">
+      <div className="text-center flex flex-col items-center">
+        <div className="mb-6 animate-bounce">
+          <Image
+            src="/logo.jpg"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="rounded-full border border-gold/30 shadow-[0_0_20px_rgba(255,107,0,0.3)]"
+          />
+        </div>
         <h1 className="font-display font-bold text-6xl md:text-8xl tracking-widest text-transparent text-outline animate-pulse">
           DÖNERHAUS
         </h1>
