@@ -11,7 +11,7 @@ test('Capture Screenshots', async ({ page }) => {
   await page.screenshot({ path: 'verification/hero_section.png' });
 
   // 2. Club Section
-  await page.getByText(/BLACK MEMBER/i).scrollIntoViewIfNeeded();
+  await page.getByText(/BLACK/i).first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(1000);
   await page.screenshot({ path: 'verification/club_section.png' });
 
