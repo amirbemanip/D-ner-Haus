@@ -1,13 +1,17 @@
 "use client"
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X, Fingerprint, Lock, Camera, CameraOff } from 'lucide-react';
+import { Search, User, Ticket, Gift, Plus, Check, RefreshCw, X, Fingerprint, Lock, Camera, CameraOff, Sparkles, Star } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Html5QrcodeScanner } from 'html5-qrcode';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function SellerPage() {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
   const [code, setCode] = useState('');
   const [customer, setCustomer] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -24,10 +28,20 @@ export default function SellerPage() {
     setCustomer(null);
 
     try {
-      const res = await fetch(`/api/customer/${searchCode}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setCustomer(data);
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .or(`membership_code.eq.${searchCode},phone.eq.${searchCode}`)
+        .single();
+
+      if (error || !data) throw new Error('Customer not found');
+
+      setCustomer({
+        ...data,
+        membershipCode: data.membership_code,
+        receivedFirstGift: data.received_first_gift,
+        googleReviewStatus: data.google_review_status
+      });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -45,6 +59,25 @@ export default function SellerPage() {
   const onScanFailure = React.useCallback((error: any) => {
     // console.warn(`Code scan error = ${error}`);
   }, []);
+
+  useEffect(() => {
+    const sessionStr = localStorage.getItem('donerhaus_session');
+    if (!sessionStr) {
+      router.push('/login?from=/seller');
+      return;
+    }
+    try {
+      const session = JSON.parse(sessionStr);
+      if (session.expiry < Date.now()) {
+        localStorage.removeItem('donerhaus_session');
+        router.push('/login?from=/seller');
+        return;
+      }
+      setAuthorized(true);
+    } catch (e) {
+      router.push('/login?from=/seller');
+    }
+  }, [router]);
 
   useEffect(() => {
     if (isScanning) {
@@ -73,6 +106,8 @@ export default function SellerPage() {
     handleSearchWithCode(code);
   };
 
+  if (!authorized) return null;
+
   const handleAction = async (action: string) => {
     if (!customer) return;
     setLoading(true);
@@ -80,18 +115,48 @@ export default function SellerPage() {
     setMessage('');
 
     try {
-      const res = await fetch(`/api/customer/${customer.membershipCode}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setCustomer(data);
+      let updateData: any = {};
+      let logMessage = '';
 
-      if (action === 'add_purchase') setMessage('STAMP ADDED');
-      if (action === 'redeem_doner') setMessage('REWARD REDEEMED');
-      if (action === 'redeem_fries') setMessage('GIFT REDEEMED');
+      if (action === 'add_purchase') {
+        updateData.coupons = customer.coupons + 1;
+        logMessage = 'STAMP ADDED';
+      } else if (action === 'redeem_glass') {
+        updateData.coupons = customer.coupons - 5;
+        logMessage = 'GLASS REDEEMED';
+      } else if (action === 'redeem_fries') {
+        // Welcome gift fries
+        if (!customer.receivedFirstGift) {
+          updateData.received_first_gift = true;
+          logMessage = 'WELCOME GIFT REDEEMED';
+        } else {
+          updateData.coupons = customer.coupons - 9;
+          logMessage = 'FRIES REDEEMED';
+        }
+      } else if (action === 'redeem_doner') {
+        updateData.coupons = customer.coupons - 12;
+        logMessage = 'FREE DÖNER REDEEMED';
+      } else if (action === 'redeem_plate') {
+        updateData.coupons = customer.coupons - 20;
+        logMessage = 'DÖNER PLATE REDEEMED';
+      }
+
+      const { data, error } = await supabase
+        .from('customers')
+        .update(updateData)
+        .eq('id', customer.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setCustomer({
+        ...data,
+        membershipCode: data.membership_code,
+        receivedFirstGift: data.received_first_gift,
+        googleReviewStatus: data.google_review_status
+      });
+      setMessage(logMessage);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -189,12 +254,12 @@ export default function SellerPage() {
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-3">Loyalty Progress</div>
                         <div className="flex items-end gap-2 mb-4">
                           <span className="text-4xl md:text-6xl font-display font-bold text-white leading-none">{customer.coupons}</span>
-                          <span className="text-lg md:text-xl text-gray-600 mb-1 font-mono">/ 10</span>
+                          <span className="text-lg md:text-xl text-gray-600 mb-1 font-mono">/ 20</span>
                         </div>
                         <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
                           <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: `${Math.min((customer.coupons % 10) * 10, 100)}%` }}
+                            animate={{ width: `${Math.min((customer.coupons / 20) * 100, 100)}%` }}
                             className="h-full bg-gold shadow-[0_0_15px_rgba(255,107,0,0.5)]"
                           />
                         </div>
@@ -204,18 +269,45 @@ export default function SellerPage() {
                           <div className="bg-gold/10 border border-gold/30 p-3 md:p-4 rounded-lg flex items-center justify-between">
                             <div className="flex items-center gap-2 md:gap-3">
                               <Gift className="w-4 h-4 text-gold" />
-                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest">Welcome Gift</span>
+                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest">Welcome Gift (Fries)</span>
                             </div>
                             <button onClick={() => handleAction('redeem_fries')} className="px-3 py-1.5 md:px-4 md:py-2 bg-gold text-black text-[9px] font-bold uppercase rounded hover:bg-white transition-colors">Redeem</button>
                           </div>
                         )}
-                        {customer.coupons >= 10 && (
+                        {customer.coupons >= 5 && (
+                          <div className="bg-white/5 border border-white/10 p-3 md:p-4 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center gap-2 md:gap-3">
+                              <Sparkles className="w-4 h-4 text-gold" />
+                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest text-left">Free Glass <br/><span className="text-[8px] opacity-50 font-mono">(-5 Stamps)</span></span>
+                            </div>
+                            <button onClick={() => handleAction('redeem_glass')} className="px-3 py-1.5 md:px-4 md:py-2 bg-white text-black text-[9px] font-bold uppercase rounded hover:bg-gold transition-colors">Redeem</button>
+                          </div>
+                        )}
+                        {customer.coupons >= 9 && (
+                          <div className="bg-white/5 border border-white/10 p-3 md:p-4 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center gap-2 md:gap-3">
+                              <Gift className="w-4 h-4 text-gold" />
+                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest text-left">Free Fries <br/><span className="text-[8px] opacity-50 font-mono">(-9 Stamps)</span></span>
+                            </div>
+                            <button onClick={() => handleAction('redeem_fries')} className="px-3 py-1.5 md:px-4 md:py-2 bg-white text-black text-[9px] font-bold uppercase rounded hover:bg-gold transition-colors">Redeem</button>
+                          </div>
+                        )}
+                        {customer.coupons >= 12 && (
                           <div className="bg-green-500/10 border border-green-500/30 p-3 md:p-4 rounded-lg flex items-center justify-between">
                             <div className="flex items-center gap-2 md:gap-3">
                               <Ticket className="w-4 h-4 text-green-500" />
-                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest">Free Döner</span>
+                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest text-left">Free Döner <br/><span className="text-[8px] opacity-50 font-mono">(-12 Stamps)</span></span>
                             </div>
                             <button onClick={() => handleAction('redeem_doner')} className="px-3 py-1.5 md:px-4 md:py-2 bg-green-500 text-black text-[9px] font-bold uppercase rounded hover:bg-white transition-colors">Redeem</button>
+                          </div>
+                        )}
+                        {customer.coupons >= 20 && (
+                          <div className="bg-purple-500/10 border border-purple-500/30 p-3 md:p-4 rounded-lg flex items-center justify-between">
+                            <div className="flex items-center gap-2 md:gap-3">
+                              <Star className="w-4 h-4 text-purple-500" />
+                              <span className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest text-left">Döner Plate <br/><span className="text-[8px] opacity-50 font-mono">(-20 Stamps)</span></span>
+                            </div>
+                            <button onClick={() => handleAction('redeem_plate')} className="px-3 py-1.5 md:px-4 md:py-2 bg-purple-500 text-black text-[9px] font-bold uppercase rounded hover:bg-white transition-colors">Redeem</button>
                           </div>
                         )}
                       </div>

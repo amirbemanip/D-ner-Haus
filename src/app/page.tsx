@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, MapPin, Star, Leaf, Flame, Wifi, Zap, ArrowDownRight, Download, Printer, Copy, Check } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { menuItems } from '@/data/menu';
 import { Button } from '@/components/ui/Button';
+import { supabase } from '@/lib/supabase';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,10 +29,16 @@ export default function Home() {
   useEffect(() => {
     const fetchBroadcasts = async () => {
       try {
-        const query = user ? `?phone=${user.phone}&code=${user.membershipCode}` : '';
-        const res = await fetch(`/api/club/broadcasts${query}`);
-        const data = await res.json();
-        if (res.ok) setBroadcasts(data);
+        let query = supabase.from('broadcasts').select('*').order('created_at', { ascending: false });
+
+        if (user) {
+          query = query.or(`target.eq.ALL,and(target.eq.PHONE,target_value.eq.${user.phone}),and(target.eq.CODE,target_value.eq.${user.membershipCode})`);
+        } else {
+          query = query.eq('target', 'ALL');
+        }
+
+        const { data, error } = await query;
+        if (!error) setBroadcasts(data || []);
       } catch (err) {}
     };
     fetchBroadcasts();
@@ -77,19 +85,49 @@ export default function Home() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setUser(data);
-      } else {
-        setError(data.error || 'Ein Fehler ist aufgetreten');
+      // Check if phone exists
+      const { data: existing } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('phone', formData.phone)
+        .single();
+
+      if (existing) {
+        setError('Diese Telefonnummer ist bereits registriert.');
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      setError('Verbindung zum Server fehlgeschlagen');
+
+      // Generate unique code
+      let membershipCode = Math.floor(100000 + Math.random() * 900000).toString();
+      let isUnique = false;
+      while (!isUnique) {
+        const { data: codeCheck } = await supabase
+          .from('customers')
+          .select('membership_code')
+          .eq('membership_code', membershipCode)
+          .single();
+        if (!codeCheck) isUnique = true;
+        else membershipCode = Math.floor(100000 + Math.random() * 900000).toString();
+      }
+
+      const { data, error } = await supabase
+        .from('customers')
+        .insert([{
+          name: formData.name,
+          phone: formData.phone,
+          membership_code: membershipCode,
+          coupons: 0,
+          received_first_gift: false,
+          google_review_status: 'NONE'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      setUser({ ...data, membershipCode: data.membership_code, receivedFirstGift: data.received_first_gift, googleReviewStatus: data.google_review_status });
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -100,17 +138,18 @@ export default function Home() {
     setLookupLoading(true);
     setLookupError('');
     try {
-      const res = await fetch('/api/club/lookup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: lookupData.name, membershipCode: lookupData.code }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setUser(data);
-        document.getElementById('club')?.scrollIntoView({ behavior: 'smooth' });
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('name', lookupData.name)
+        .eq('membership_code', lookupData.code)
+        .single();
+
+      if (error || !data) {
+        setLookupError('Nicht gefunden');
       } else {
-        setLookupError(data.error || 'Nicht gefunden');
+        setUser({ ...data, membershipCode: data.membership_code, receivedFirstGift: data.received_first_gift, googleReviewStatus: data.google_review_status });
+        document.getElementById('club')?.scrollIntoView({ behavior: 'smooth' });
       }
     } catch (err) {
       setLookupError('Fehler');
@@ -146,13 +185,14 @@ export default function Home() {
 
   const handleReviewSubmit = async () => {
     try {
-      await fetch('/api/reviews/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ membershipCode: user.membershipCode }),
-      });
-      // Update local state to show PENDING
-      setUser({ ...user, googleReviewStatus: 'PENDING' });
+      const { error } = await supabase
+        .from('customers')
+        .update({ google_review_status: 'PENDING' })
+        .eq('membership_code', user.membershipCode);
+
+      if (!error) {
+        setUser({ ...user, googleReviewStatus: 'PENDING' });
+      }
     } catch (err) {}
   };
 
@@ -306,6 +346,44 @@ export default function Home() {
               ) : (
                 <div className="flex flex-col items-start animate-fade-in w-full">
                   <p className="text-xl text-white mb-6">Willkommen im Club, <span className="text-gold font-bold">{user.name}</span>.</p>
+
+                  {/* LOYALTY PROGRESS BAR */}
+                  <div className="w-full mb-12 space-y-4">
+                    <div className="flex justify-between items-end mb-2">
+                      <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Loyalty Progress</div>
+                      <div className="text-2xl font-display font-bold text-white tracking-tighter">
+                        {user.coupons} <span className="text-xs text-gray-600">Stamps</span>
+                      </div>
+                    </div>
+                    <div className="relative h-4 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min((user.coupons / 20) * 100, 100)}%` }}
+                        className="h-full bg-gradient-to-r from-gold/50 to-gold shadow-[0_0_20px_rgba(255,107,0,0.4)]"
+                      />
+                      {/* Milestones markers */}
+                      {[5, 9, 12, 20].map((m) => (
+                        <div
+                          key={m}
+                          className="absolute top-0 bottom-0 w-[1px] bg-white/20"
+                          style={{ left: `${(m / 20) * 100}%` }}
+                        />
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[
+                        { s: 5, l: 'Glass' },
+                        { s: 9, l: 'Fries' },
+                        { s: 12, l: 'Döner' },
+                        { s: 20, l: 'Plate' }
+                      ].map((m) => (
+                        <div key={m.s} className="text-center">
+                          <div className={`text-[8px] font-bold uppercase tracking-tighter mb-1 ${user.coupons >= m.s ? 'text-gold' : 'text-gray-600'}`}>{m.l}</div>
+                          <div className={`text-[9px] font-mono ${user.coupons >= m.s ? 'text-white' : 'text-gray-700'}`}>{m.s}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
                   {/* BROADCASTS */}
                   {broadcasts.length > 0 && (

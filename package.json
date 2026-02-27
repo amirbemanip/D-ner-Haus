@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build && node scripts/rename-next.js",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@prisma/client": "^6.2.1",
     "@studio-freight/lenis": "^1.0.42",
+    "@supabase/supabase-js": "^2.98.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.33.0",
     "gsap": "^3.14.2",
