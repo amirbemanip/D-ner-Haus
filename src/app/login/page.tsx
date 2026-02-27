@@ -7,14 +7,16 @@ import { Lock, ArrowRight, ShieldCheck } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { supabase } from '@/lib/supabase'
 
 function LoginContent() {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const from = searchParams.get('from') || '/'
+  const from = searchParams.get('from') || '/seller'
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -22,15 +24,23 @@ function LoginContent() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      })
+      // Direct staff table check (Client-side simple auth)
+      const { data, error: sbError } = await supabase
+        .from('staff')
+        .select('*')
+        .eq('username', username)
+        .eq('password', password)
+        .single()
 
-      if (response.ok) {
+      if (data && !sbError) {
+        // Store session in localStorage for client-side persistence
+        localStorage.setItem('donerhaus_session', JSON.stringify({
+          id: data.id,
+          username: data.username,
+          role: data.role,
+          expiry: Date.now() + (1000 * 60 * 60 * 24) // 24h
+        }))
         router.push(from)
-        router.refresh()
       } else {
         setError('ACCESS DENIED')
       }
@@ -50,9 +60,20 @@ function LoginContent() {
       <h1 className="font-display text-2xl font-bold text-white mb-2 text-center uppercase tracking-widest">System Access</h1>
       <p className="text-gray-500 text-[10px] mb-8 text-center uppercase tracking-[0.3em]">Authorized Access Only</p>
 
-      <form onSubmit={handleSubmit} className="w-full space-y-6">
+      <form onSubmit={handleSubmit} className="w-full space-y-4">
         <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gold w-4 h-4" />
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="USERNAME"
+            className="pl-6"
+            required
+          />
+        </div>
+
+        <div className="relative">
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gold w-4 h-4 opacity-50" />
           <Input
             type="password"
             value={password}

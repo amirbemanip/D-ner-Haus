@@ -7,6 +7,7 @@ import { toPng } from 'html-to-image';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { supabase } from '@/lib/supabase';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({ name: '', phone: '' });
@@ -46,21 +47,49 @@ export default function RegisterPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // Check if phone exists
+      const { data: existing } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('phone', formData.phone)
+        .single();
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || 'Something went wrong');
-      } else {
-        setMembershipCode(data.membershipCode);
+      if (existing) {
+        setError('Diese Telefonnummer ist bereits registriert.');
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      setError('Failed to connect to server');
+
+      // Generate unique code
+      let code = Math.floor(100000 + Math.random() * 900000).toString();
+      let isUnique = false;
+      while (!isUnique) {
+        const { data: codeCheck } = await supabase
+          .from('customers')
+          .select('membership_code')
+          .eq('membership_code', code)
+          .single();
+        if (!codeCheck) isUnique = true;
+        else code = Math.floor(100000 + Math.random() * 900000).toString();
+      }
+
+      const { data, error } = await supabase
+        .from('customers')
+        .insert([{
+          name: formData.name,
+          phone: formData.phone,
+          membership_code: code,
+          coupons: 0,
+          received_first_gift: false,
+          google_review_status: 'NONE'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      setMembershipCode(data.membership_code);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
     } finally {
       setLoading(false);
     }

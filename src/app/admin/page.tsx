@@ -6,27 +6,52 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
+import { supabase } from '@/lib/supabase';
+import { Plus, Minus, Trash2, UserPlus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
   const [customers, setCustomers] = useState<any[]>([]);
+  const [staff, setStaff] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState<'registry' | 'broadcast' | 'reviews'>('registry');
+  const [activeTab, setActiveTab] = useState<'registry' | 'broadcast' | 'reviews' | 'staff'>('registry');
   const [broadcastForm, setBroadcastForm] = useState({ title: '', content: '', target: 'ALL', targetValue: '' });
+  const [staffForm, setStaffForm] = useState({ username: '', password: '', role: 'CASHIER' });
   const [pendingReviews, setPendingReviews] = useState<any[]>([]);
   const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    const sessionStr = localStorage.getItem('donerhaus_session');
+    if (!sessionStr) {
+      router.push('/login?from=/admin');
+      return;
+    }
+    try {
+      const session = JSON.parse(sessionStr);
+      if (session.expiry < Date.now() || session.role !== 'ADMIN') {
+        localStorage.removeItem('donerhaus_session');
+        router.push('/login?from=/admin');
+        return;
+      }
+      setAuthorized(true);
+    } catch (e) {
+      router.push('/login?from=/admin');
+    }
+  }, [router]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [custRes, reviewRes] = await Promise.all([
-        fetch('/api/admin/customers'),
-        fetch('/api/admin/reviews')
-      ]);
-      const custData = await custRes.json();
-      const reviewData = await reviewRes.json();
-      setCustomers(Array.isArray(custData) ? custData : []);
-      setPendingReviews(Array.isArray(reviewData) ? reviewData : []);
+      const { data: custData } = await supabase.from('customers').select('*').order('created_at', { ascending: false });
+      const { data: reviewData } = await supabase.from('customers').select('*').eq('google_review_status', 'PENDING');
+      const { data: staffData } = await supabase.from('staff').select('*');
+
+      setCustomers(custData || []);
+      setPendingReviews(reviewData || []);
+      setStaff(staffData || []);
     } catch (err) {
       console.error('Failed to fetch data');
     } finally {
@@ -42,11 +67,13 @@ export default function AdminPage() {
     e.preventDefault();
     setActionLoading(true);
     try {
-      await fetch('/api/admin/broadcast', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(broadcastForm),
-      });
+      const { error } = await supabase.from('broadcasts').insert([{
+        title: broadcastForm.title,
+        content: broadcastForm.content,
+        target: broadcastForm.target,
+        target_value: broadcastForm.targetValue
+      }]);
+      if (error) throw error;
       setBroadcastForm({ title: '', content: '', target: 'ALL', targetValue: '' });
       alert('Broadcast sent!');
     } catch (err) {
@@ -59,7 +86,8 @@ export default function AdminPage() {
   const handleClearBroadcasts = async () => {
     if (!confirm('Clear all broadcasts?')) return;
     try {
-      await fetch('/api/admin/broadcast', { method: 'DELETE' });
+      const { error } = await supabase.from('broadcasts').delete().neq('id', '0');
+      if (error) throw error;
       alert('Broadcasts cleared');
     } catch (err) {}
   };
@@ -67,17 +95,52 @@ export default function AdminPage() {
   const handleReviewAction = async (customerId: string, action: 'approve' | 'reject') => {
     setActionLoading(true);
     try {
-      await fetch('/api/admin/reviews/verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerId, action }),
-      });
+      if (action === 'approve') {
+        const cust = customers.find(c => c.id === customerId);
+        await supabase.from('customers').update({
+          google_review_status: 'APPROVED',
+          coupons: (cust?.coupons || 0) + 1
+        }).eq('id', customerId);
+      } else {
+        await supabase.from('customers').update({
+          google_review_status: 'NONE'
+        }).eq('id', customerId);
+      }
       fetchData();
     } catch (err) {
       alert('Failed');
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const handleAdjustStamps = async (id: string, amount: number) => {
+    const cust = customers.find(c => c.id === id);
+    if (!cust) return;
+    const newCount = Math.max(0, cust.coupons + amount);
+    await supabase.from('customers').update({ coupons: newCount }).eq('id', id);
+    fetchData();
+  };
+
+  const handleStaffCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      const { error } = await supabase.from('staff').insert([staffForm]);
+      if (error) throw error;
+      setStaffForm({ username: '', password: '', role: 'CASHIER' });
+      fetchData();
+    } catch (err) {
+      alert('Failed to create staff');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleStaffDelete = async (id: string) => {
+    if (!confirm('Delete staff member?')) return;
+    await supabase.from('staff').delete().eq('id', id);
+    fetchData();
   };
 
   const filtered = customers.filter(c =>
@@ -120,7 +183,7 @@ export default function AdminPage() {
         </div>
 
         <div className="flex flex-wrap gap-4 border-b border-white/5 pb-4">
-          {['registry', 'broadcast', 'reviews'].map(tab => (
+          {['registry', 'broadcast', 'reviews', 'staff'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
@@ -170,7 +233,7 @@ export default function AdminPage() {
                     <th className="px-6 md:px-10 py-4 md:py-6 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500">Security Code</th>
                     <th className="px-6 md:px-10 py-4 md:py-6 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500 text-center">Loyalty Status</th>
                     <th className="px-6 md:px-10 py-4 md:py-6 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500">Gift Status</th>
-                    <th className="px-6 md:px-10 py-4 md:py-6 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500">Registered</th>
+                    <th className="px-6 md:px-10 py-4 md:py-6 text-[9px] font-bold uppercase tracking-[0.4em] text-gray-500 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -190,7 +253,7 @@ export default function AdminPage() {
                         </td>
                         <td className="px-6 md:px-10 py-4 md:py-6">
                           <span className="px-3 py-1 bg-black rounded-lg border border-white/5 font-mono text-xs tracking-widest text-gold">
-                            {c.membershipCode}
+                            {c.membership_code}
                           </span>
                         </td>
                         <td className="px-6 md:px-10 py-4 md:py-6">
@@ -198,19 +261,22 @@ export default function AdminPage() {
                             <span className="font-display font-bold text-lg md:text-xl">{c.coupons}</span>
                             <div className="w-20 md:w-24 h-1 bg-white/5 rounded-full overflow-hidden">
                               <div
-                                className={`h-full ${c.coupons >= 10 ? 'bg-green-500' : 'bg-gold'} shadow-[0_0_8px_rgba(255,107,0,0.3)]`}
-                                style={{ width: `${Math.min((c.coupons % 10) * 10, 100)}%` }}
+                                className={`h-full ${c.coupons >= 20 ? 'bg-purple-500' : c.coupons >= 12 ? 'bg-green-500' : 'bg-gold'} shadow-[0_0_8px_rgba(255,107,0,0.3)]`}
+                                style={{ width: `${Math.min((c.coupons / 20) * 100, 100)}%` }}
                               />
                             </div>
                           </div>
                         </td>
                         <td className="px-6 md:px-10 py-4 md:py-6">
-                          <Badge variant={c.receivedFirstGift ? 'green' : 'gold'}>
-                            {c.receivedFirstGift ? 'CLAIMED' : 'PENDING'}
+                          <Badge variant={c.received_first_gift ? 'green' : 'gold'}>
+                            {c.received_first_gift ? 'CLAIMED' : 'PENDING'}
                           </Badge>
                         </td>
-                        <td className="px-6 md:px-10 py-4 md:py-6 text-gray-600 font-mono text-[10px]">
-                          {new Date(c.createdAt).toLocaleDateString('de-DE')}
+                        <td className="px-6 md:px-10 py-4 md:py-6 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button onClick={() => handleAdjustStamps(c.id, 1)} className="p-2 bg-white/5 rounded hover:text-gold"><Plus className="w-4 h-4"/></button>
+                            <button onClick={() => handleAdjustStamps(c.id, -1)} className="p-2 bg-white/5 rounded hover:text-red-500"><Minus className="w-4 h-4"/></button>
+                          </div>
                         </td>
                       </motion.tr>
                     ))}
@@ -339,6 +405,49 @@ export default function AdminPage() {
                     3. If no review is found, click Reject to reset their status.
                   </p>
                </div>
+            </div>
+          )}
+
+          {activeTab === 'staff' && (
+            <div className="max-w-4xl space-y-8">
+              <h2 className="text-2xl font-display font-bold text-white uppercase tracking-tight">Staff Management</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                <Card className="p-8">
+                  <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-6">Create New Account</h3>
+                  <form onSubmit={handleStaffCreate} className="space-y-4">
+                    <div className="space-y-1">
+                       <label className="text-[9px] uppercase tracking-widest text-gray-600 ml-1">Username</label>
+                       <Input value={staffForm.username} onChange={e => setStaffForm({...staffForm, username: e.target.value})} required />
+                    </div>
+                    <div className="space-y-1">
+                       <label className="text-[9px] uppercase tracking-widest text-gray-600 ml-1">Initial Password</label>
+                       <Input type="password" value={staffForm.password} onChange={e => setStaffForm({...staffForm, password: e.target.value})} required />
+                    </div>
+                    <Button type="submit" variant="gold" className="w-full" disabled={actionLoading}>
+                       <UserPlus className="w-4 h-4 mr-2" /> CREATE STAFF
+                    </Button>
+                  </form>
+                </Card>
+
+                <div className="space-y-4">
+                   {staff.map(s => (
+                     <Card key={s.id} className="p-6 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                           <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                              <ShieldCheck className="w-5 h-5 text-gold" />
+                           </div>
+                           <div>
+                              <p className="font-bold text-white">{s.username}</p>
+                              <p className="text-[10px] text-gray-500 uppercase font-mono tracking-widest">{s.role}</p>
+                           </div>
+                        </div>
+                        <button onClick={() => handleStaffDelete(s.id)} className="p-2 text-gray-600 hover:text-red-500 transition-colors">
+                           <Trash2 className="w-4 h-4" />
+                        </button>
+                     </Card>
+                   ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
